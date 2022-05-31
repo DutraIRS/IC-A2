@@ -50,46 +50,44 @@ nav ul li a:hover {
 }
 /* Tabelas de investimentos */
 /* Formatação da tabela de ações */
-div [class=acoes] {
-    margin-top: 20px;
-    border-collapse: collapse;
-    margin: 20px 0;
+div .acoes {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
     font-size: 18px;
-    min-width: 500px;
-    margin: auto;
-    border-radius: 5px;
+    width: 500px;
+    text-align: center;
 }
 
-div [class=acoes] th {
+div .acoes th {
     background-color: #296bf8;
     color: #ecedea;
     text-align: left;
     font-weight: bold;
 }
 
-div [class=acoes] td {
+div .acoes td {
     border-bottom: 1px solid;
 }
 
 /* Formatação da tabela de moedas */
-div [class=coins] {
-    margin-top: 20px;
-    border-collapse: collapse;
-    margin: 20px 0;
+div .moedas {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
     font-size: 18px;
-    min-width: 500px;
-    margin: auto;
-    border-radius: 5px;
+    width: 500px;
+    text-align: center;
 }
 
-div [class=coins] th {
+div .moedas th {
     background-color: #296bf8;
     color: #ecedea;
     text-align: left;
     font-weight: bold;
 }
 
-div [class=coins] td {
+div .moedas td {
     border-bottom: 1px solid;
 }
 
@@ -100,7 +98,6 @@ div [class=coins] td {
 /*Formatação do footer*/
 .footer {
     display: flex;
-    flex-flow: row wrap;
     padding: 50px;
     color: #fff;
     background-color: #022268;
@@ -112,7 +109,7 @@ div [class=coins] td {
     height: 150px;
 }
 
-.footer [class=l-footer] img {
+.footer img {
     color: #ecedea;
 	border-radius: 50%;
     width: 50px;
@@ -120,5 +117,5 @@ div [class=coins] td {
 
 .container {
     float:right; 
-    width:80%;
+    width:50%;
 }
