@@ -27,4 +27,10 @@ def ler_ativos(conteudo):
     div_acoes = encontrar_div_com_classe(conteudo, "acao")
     acoes = ler_table_data(div_acoes)
 
-    return moedas, acoes
+    ativos = {"moedas": moedas, "acoes": acoes}
+    return ativos
+
+def buscar_carteira(url):
+    site = buscar_site(url)
+    carteira = ler_ativos(site)
+    return carteira
