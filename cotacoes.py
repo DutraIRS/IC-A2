@@ -45,3 +45,9 @@ def moedas_em_real(moedas):
         dicionario_valor_real[moeda] = moeda_em_real
     
     return dicionario_valor_real
+
+def converte_cotacao(cotacao, razao):
+    cotacao["Open"] *= razao
+    cotacao["High"] *= razao
+    cotacao["Low"] *= razao
+    cotacao["Close"] *= razao
