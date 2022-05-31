@@ -9,3 +9,13 @@ def buscar_site(url):
 
 def encontrar_div_com_classe(conteudo, classe):
     return conteudo.find("div", class_ = classe)
+
+def ler_table_data(conteudo):
+    celulas = conteudo.find_all("td")
+    dicionario = {}
+
+    iterador = iter(celulas)
+    for celula in iterador:
+        dicionario[celula.string] = float(next(iterador).string)
+    
+    return dicionario
