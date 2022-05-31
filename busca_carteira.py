@@ -19,3 +19,12 @@ def ler_table_data(conteudo):
         dicionario[celula.string] = float(next(iterador).string)
     
     return dicionario
+
+def ler_ativos(conteudo):
+    div_moedas = encontrar_div_com_classe(conteudo, "moeda")
+    moedas = ler_table_data(div_moedas)
+
+    div_acoes = encontrar_div_com_classe(conteudo, "acao")
+    acoes = ler_table_data(div_acoes)
+
+    return moedas, acoes
