@@ -25,4 +25,22 @@ def obtem_cotacoes(acoes, dias):
     
     return dicionario_cotacoes
 
-print(obtem_cotacoes(["NFLX", "AAPL"], 1))
+def moedas_em_real(moedas):
+    textos_moedas = []
+    for moeda in moedas:
+        texto_conversao = f"{moeda}BRL=X"
+        textos_moedas.append(texto_conversao)
+    
+    texto_conversoes = ' '.join(textos_moedas)
+    tickers_moedas = yf.Tickers(texto_conversoes)
+    dicionario_cotacoes = dict(tickers_moedas.tickers)
+
+    dicionario_valor_real = {}
+    for texto_conversao in dicionario_cotacoes.keys():
+        ticker = dicionario_cotacoes[texto_conversao]
+        moeda_em_real = ticker.info["regularMarketPrice"]
+
+        moeda = texto_conversao[:-5]
+        dicionario_valor_real[moeda] = moeda_em_real
+    
+    return dicionario_valor_real
