@@ -6,3 +6,6 @@ def buscar_site(url):
     site = BeautifulSoup(resposta.text, "lxml")
 
     return site
+
+def encontrar_div_com_classe(conteudo, classe):
+    return conteudo.find("div", class_ = classe)
