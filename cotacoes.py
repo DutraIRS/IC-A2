@@ -21,7 +21,8 @@ def obtem_cotacoes(acoes, dias):
     dicionario_cotacoes = dict(tickers_acoes.tickers)
     texto_historico = f"{dias}d"
     for acao in dicionario_cotacoes.keys():
-        dicionario_cotacoes[acao] = dicionario_cotacoes[acao].history(texto_historico)
+        cotacao = dicionario_cotacoes[acao].history(texto_historico)
+        dicionario_cotacoes[acao] = cotacao
     
     return dicionario_cotacoes
 
