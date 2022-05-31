@@ -1,0 +1,124 @@
+
+/* Barra de navegação */
+nav {
+    position: relative;
+	background: #296bf8;
+    border-radius: 20px;
+    width: 50%;   
+	font-size: 18px;
+	font-family: Rockwell;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+    vertical-align : middle;
+    margin: 0 auto 0 auto;
+    min-width: 500px;
+}
+
+nav ul {
+	list-style-type: none;
+}
+
+nav ul li {
+	color: #ecedea;
+	display: inline-flex;
+}
+
+nav ul li [class=team-image] {
+	color: #ecedea;
+	border-radius: 50%;
+    width: 50px;
+}
+nav ul li [class=link] {
+	color: #ecedea;
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+nav ul li a {
+	text-decoration: none;
+	color: #ecedea;
+	margin: 0;
+    vertical-align: middle;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+nav ul li a:hover {
+	background-color: #002efc;
+    border-radius: 30px;
+	transition: .8s
+}
+/* Tabelas de investimentos */
+/* Formatação da tabela de ações */
+div [class=acoes] {
+    margin-top: 20px;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    min-width: 500px;
+    margin: auto;
+    border-radius: 5px;
+}
+
+div [class=acoes] th {
+    background-color: #296bf8;
+    color: #ecedea;
+    text-align: left;
+    font-weight: bold;
+}
+
+div [class=acoes] td {
+    border-bottom: 1px solid;
+}
+
+/* Formatação da tabela de moedas */
+div [class=coins] {
+    margin-top: 20px;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    min-width: 500px;
+    margin: auto;
+    border-radius: 5px;
+}
+
+div [class=coins] th {
+    background-color: #296bf8;
+    color: #ecedea;
+    text-align: left;
+    font-weight: bold;
+}
+
+div [class=coins] td {
+    border-bottom: 1px solid;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+    
+/*Formatação do footer*/
+.footer {
+    display: flex;
+    flex-flow: row wrap;
+    padding: 50px;
+    color: #fff;
+    background-color: #022268;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width:100%;
+    height: 150px;
+}
+
+.footer [class=l-footer] img {
+    color: #ecedea;
+	border-radius: 50%;
+    width: 50px;
+}
+
+.container {
+    float:right; 
+    width:80%;
+}
