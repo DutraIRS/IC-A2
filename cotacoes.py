@@ -1,31 +1,31 @@
-import yfinance as yf
+import yahooquery as yq
+import busca_carteira as bc
 
-def obtem_cotacao(acao, dias):
+
+def obtem_cotacao(acao):
     """
-    Obtém a cotação dos últimos N dias da ação
+    Obtém a cotação da ação
 
-    Recebe o código da ação e o número de dias, busca as cotações utilizando a
-    biblioteca yfinance e retorna um DataFrame contendo as informações obtidas.
+    Recebe o código da ação, busca a cotação utilizando a biblioteca yahooquery
+    e retorna um dicionário contendo as informações obtidas.
 
     :param acao: Código da ação
     :type acao: str
-    :param dias: Quantos dias de cotações devem ser retornados
-    :type dias: int
-    :return: As cotações dos últimos N dias
-    :rtype: pandas.core.frame.DataFrame
+    :return: A cotação da ação
+    :rtype: dict(str, Any)
     """
-    ticker = yf.Ticker(acao)
-    texto_historico = f"{dias}d"
+    ticker = yq.Ticker(acao)
 
-    cotacao = ticker.history(texto_historico)
+    cotacao = ticker.price
     return cotacao
+
 
 def moeda_em_real(moeda):
     """
     Obtém o valor de uma moeda em reais.
 
     Recebe o código de uma moeda, busca o seu valor em reais utilizando a
-    biblioteca yfinance e retorna esse valor.
+    biblioteca yahooquery e retorna esse valor.
 
     :param moeda: O código da moeda
     :type moeda: str
@@ -33,44 +33,38 @@ def moeda_em_real(moeda):
     :rtype: float
     """
     texto_conversao = f"{moeda}BRL=X"
-    ticker = yf.Ticker(texto_conversao)
+    ticker = yq.Ticker(texto_conversao)
 
-    moeda_em_real = ticker.info["regularMarketPrice"]
+    dados_moeda = ticker.price[texto_conversao]
+    moeda_em_real = dados_moeda["regularMarketPrice"]
     return moeda_em_real
 
-def obtem_cotacoes(acoes, dias):
-    """
-    Obtém as cotações dos últimos N dias para as ações dadas.
 
-    Recebe uma lista de códigos de ações e uma quantidade de dias, busca as
-    cotações das ações dos últimos N dias utilizando a biblioteca yfinance e
-    retorna um dicionário ligando os códigos das ações com suas respectivas
-    cotações.
+def obtem_cotacoes(acoes):
+    """
+    Obtém as cotações das ações dadas.
+
+    Recebe uma lista de códigos de ações, busca as cotações das ações utilizando a biblioteca yahooquery e retorna um dicionário ligando os códigos das ações com suas respectivas cotações.
 
     :param acoes: Lista dos códigos das ações
     :type acoes: list(str)
-    :param dias: Quantos dias de cotações devem ser buscados
-    :type dias: int
     :return: Um dicionário ligando as ações com suas cotações
-    :rtype: dict(str, pandas.core.frame.DataFrame)
+    :rtype: dict(str, dict(str, Any))
     """
     texto_acoes = ' '.join(acoes)
-    tickers_acoes = yf.Tickers(texto_acoes)
+    tickers_acoes = yq.Ticker(texto_acoes)
 
-    dicionario_cotacoes = dict(tickers_acoes.tickers)
-    texto_historico = f"{dias}d"
-    for acao in dicionario_cotacoes.keys():
-        cotacao = dicionario_cotacoes[acao].history(texto_historico)
-        dicionario_cotacoes[acao] = cotacao
-    
+    dicionario_cotacoes = tickers_acoes.price
+
     return dicionario_cotacoes
+
 
 def moedas_em_real(moedas):
     """
     Recebe uma lista de moedas e retorna os valores delas em reais.
 
     Recebe uma lista de códigos de moedas, busca os valores de conversão para
-    real (BRL) utilizando a biblioteca yfinance e retorna um dicionário ligando
+    real (BRL) utilizando a biblioteca yahooquery e retorna um dicionário ligando
     os códigos com seus respectivos valores de conversão para real.
 
     :param moedas: Lista de códigos de moedas
@@ -82,20 +76,20 @@ def moedas_em_real(moedas):
     for moeda in moedas:
         texto_conversao = f"{moeda}BRL=X"
         textos_moedas.append(texto_conversao)
-    
+
     texto_conversoes = ' '.join(textos_moedas)
-    tickers_moedas = yf.Tickers(texto_conversoes)
-    dicionario_cotacoes = dict(tickers_moedas.tickers)
+    tickers_moedas = yq.Ticker(texto_conversoes)
+    dicionario_cotacoes = tickers_moedas.price
 
     dicionario_valor_real = {}
-    for texto_conversao in dicionario_cotacoes.keys():
-        ticker = dicionario_cotacoes[texto_conversao]
-        moeda_em_real = ticker.info["regularMarketPrice"]
+    for texto_conversao, ticker in dicionario_cotacoes.items():
+        moeda_em_real = ticker["regularMarketPrice"]
 
         moeda = texto_conversao[:-5]
         dicionario_valor_real[moeda] = moeda_em_real
-    
+
     return dicionario_valor_real
+
 
 def multiplica_cotacao(cotacao, razao):
     """
@@ -115,12 +109,13 @@ def multiplica_cotacao(cotacao, razao):
     cotacao["Low"] *= razao
     cotacao["Close"] *= razao
 
+
 def valor_carteira_reais(carteria):
     """
     Calcula o valor de uma carteira em reais.
 
     Busca os valores dos ativos que estão na carteira usando a biblioteca
-    yfinance, converte para reais e os soma. A carteira deve conter uma chave
+    yahooquery, converte para reais e os soma. A carteira deve conter uma chave
     "moedas" com valor de um dicionário composto de chaves com o código das
     moedas e valores com a quantidade possuida. A carteira também deve conter
     uma chave "acoes" com valor de um dicionário composto de chaves com o
@@ -134,30 +129,30 @@ def valor_carteira_reais(carteria):
     moedas = carteria["moedas"]
     acoes = carteria["acoes"]
 
-    cotacoes = obtem_cotacoes(acoes.keys(), 1)
+    cotacoes = obtem_cotacoes(acoes.keys())
 
     moedas_para_conversao = set(moedas.keys())
-    for cotacao in cotacoes:
-        moeda_da_cotacao = cotacao.info["currency"]
+    for cotacao in cotacoes.values():
+        moeda_da_cotacao = cotacao["currency"]
         moedas_para_conversao.add(moeda_da_cotacao)
 
-    #Descarta BRL do set pois ele é a moeda para qual se está convertendo
+    # Descarta BRL do set pois ele é a moeda para qual se está convertendo
     moedas_para_conversao.discard("BRL")
     moedas_para_real = moedas_em_real(moedas_para_conversao)
     moedas_para_real["BRL"] = 1
 
     total_reais = 0
 
-    for moeda, quantidade in moedas:
+    for moeda, quantidade in moedas.items():
         moeda_em_reais = quantidade * moedas_para_real[moeda]
         total_reais += moeda_em_reais
-    
-    for acao, cotacao in cotacoes:
-        moeda_acao = cotacao.info["currency"]
-        preco_original = cotacao.info["Close"]
+
+    for acao, cotacao in cotacoes.items():
+        moeda_acao = cotacao["currency"]
+        preco_original = cotacao["regularMarketPrice"]
         preco_convertido = preco_original * moedas_para_real[moeda_acao]
 
         acao_em_reais = preco_convertido * acoes[acao]
         total_reais += acao_em_reais
-    
+
     return acao_em_reais
