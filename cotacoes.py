@@ -127,7 +127,7 @@ def valor_carteira_reais(carteria):
     código das ações e valores com a quantidade possuida.
 
     :param carteira: A carteira cujos ativos serão avaliados.
-    :type carteira: dict(str, int)
+    :type carteira: dict(str, dict(str, float))
     :return: O valor da carteira em reais
     :rtype: int
     """
