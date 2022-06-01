@@ -42,7 +42,10 @@ def obtem_cotacoes(acoes, dias):
     """
     Obtém as cotações dos últimos N dias para as ações dadas.
 
-    Recebe uma lista de códigos de ações e uma quantidade de dias, busca as cotações das ações dos últimos N dias utilizando a biblioteca yfinance e retorna um dicionário ligando os códigos das ações com suas respectivas cotações.
+    Recebe uma lista de códigos de ações e uma quantidade de dias, busca as
+    cotações das ações dos últimos N dias utilizando a biblioteca yfinance e
+    retorna um dicionário ligando os códigos das ações com suas respectivas
+    cotações.
 
     :param acoes: Lista dos códigos das ações
     :type acoes: list(str)
@@ -66,7 +69,9 @@ def moedas_em_real(moedas):
     """
     Recebe uma lista de moedas e retorna os valores delas em reais.
 
-    Recebe uma lista de códigos de moedas, busca os valores de conversão para real (BRL) utilizando a biblioteca yfinance e retorna um dicionário ligando os códigos com seus respectivos valores de conversão para real.
+    Recebe uma lista de códigos de moedas, busca os valores de conversão para
+    real (BRL) utilizando a biblioteca yfinance e retorna um dicionário ligando
+    os códigos com seus respectivos valores de conversão para real.
 
     :param moedas: Lista de códigos de moedas
     :type moedas: list(str)
@@ -96,7 +101,9 @@ def multiplica_cotacao(cotacao, razao):
     """
     Multiplica uma cotação por um valor.
 
-    Multiplica os valores "Open", "High", "Low" e "Close" de uma cotação pela razão dada. Multiplicar a cotação diretamente resulta no volume vendido ("Volume") também sendo multiplicado, o que pode ser indesejado.
+    Multiplica os valores "Open", "High", "Low" e "Close" de uma cotação pela
+    razão dada. Multiplicar a cotação diretamente resulta no volume vendido
+    ("Volume") também sendo multiplicado, o que pode ser indesejado.
 
     :param cotacao: Cotação obtida de Ticker.history()
     :type cotacao: pandas.core.frame.DataFrame
