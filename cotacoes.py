@@ -1,6 +1,19 @@
 import yfinance as yf
 
 def obtem_cotacao(acao, dias):
+    """
+    Obtém a cotação dos últimos N dias da ação
+
+    Recebe o código da ação e o número de dias, busca as cotações utilizando a
+    biblioteca yfinance e retorna um DataFrame contendo as informações obtidas.
+
+    :param acao: Código da ação
+    :type acao: str
+    :param dias: Quantos dias de cotações devem ser retornados
+    :type dias: int
+    :return: As cotações dos últimos N dias
+    :rtype: pandas.core.frame.DataFrame
+    """
     ticker = yf.Ticker(acao)
     texto_historico = f"{dias}d"
 
