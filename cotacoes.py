@@ -1,24 +1,21 @@
 import yahooquery as yq
 
 
-def obtem_cotacao(acao, dias):
+def obtem_cotacao(acao):
     """
-    Obtém a cotação dos últimos N dias da ação
+    Obtém a cotação da ação
 
-    Recebe o código da ação e o número de dias, busca as cotações utilizando a
-    biblioteca yahooquery e retorna um DataFrame contendo as informações obtidas.
+    Recebe o código da ação, busca a cotação utilizando a biblioteca yahooquery
+    e retorna um dicionário contendo as informações obtidas.
 
     :param acao: Código da ação
     :type acao: str
-    :param dias: Quantos dias de cotações devem ser retornados
-    :type dias: int
-    :return: As cotações dos últimos N dias
-    :rtype: pandas.core.frame.DataFrame
+    :return: A cotação da ação
+    :rtype: dict(str, Any)
     """
     ticker = yq.Ticker(acao)
-    texto_historico = f"{dias}d"
 
-    cotacao = ticker.history(texto_historico)
+    cotacao = ticker.price
     return cotacao
 
 
