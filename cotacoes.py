@@ -41,30 +41,21 @@ def moeda_em_real(moeda):
     return moeda_em_real
 
 
-def obtem_cotacoes(acoes, dias):
+def obtem_cotacoes(acoes):
     """
-    Obtém as cotações dos últimos N dias para as ações dadas.
+    Obtém as cotações das ações dadas.
 
-    Recebe uma lista de códigos de ações e uma quantidade de dias, busca as
-    cotações das ações dos últimos N dias utilizando a biblioteca yahooquery e
-    retorna um dicionário ligando os códigos das ações com suas respectivas
-    cotações.
+    Recebe uma lista de códigos de ações, busca as cotações das ações utilizando a biblioteca yahooquery e retorna um dicionário ligando os códigos das ações com suas respectivas cotações.
 
     :param acoes: Lista dos códigos das ações
     :type acoes: list(str)
-    :param dias: Quantos dias de cotações devem ser buscados
-    :type dias: int
     :return: Um dicionário ligando as ações com suas cotações
-    :rtype: dict(str, pandas.core.frame.DataFrame)
+    :rtype: dict(str, dict(str, Any))
     """
     texto_acoes = ' '.join(acoes)
     tickers_acoes = yq.Ticker(texto_acoes)
 
-    dicionario_cotacoes = dict(tickers_acoes.price)
-    texto_historico = f"{dias}d"
-    for acao, dados in dicionario_cotacoes.items():
-        cotacao = dados.history(texto_historico)
-        dicionario_cotacoes[acao] = cotacao
+    dicionario_cotacoes = tickers_acoes.price
 
     return dicionario_cotacoes
 
@@ -167,5 +158,3 @@ def valor_carteira_reais(carteria):
         total_reais += acao_em_reais
 
     return acao_em_reais
-
-print(obtem_cotacoes(["NFLX", "AAPL"], 1))
