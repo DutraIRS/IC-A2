@@ -1,4 +1,5 @@
 import yahooquery as yq
+import busca_carteira as bc
 
 
 def obtem_cotacao(acao):
@@ -128,11 +129,11 @@ def valor_carteira_reais(carteria):
     moedas = carteria["moedas"]
     acoes = carteria["acoes"]
 
-    cotacoes = obtem_cotacoes(acoes.keys(), 1)
+    cotacoes = obtem_cotacoes(acoes.keys())
 
     moedas_para_conversao = set(moedas.keys())
     for cotacao in cotacoes.values():
-        moeda_da_cotacao = cotacao.info["currency"]
+        moeda_da_cotacao = cotacao["currency"]
         moedas_para_conversao.add(moeda_da_cotacao)
 
     # Descarta BRL do set pois ele é a moeda para qual se está convertendo
@@ -142,13 +143,13 @@ def valor_carteira_reais(carteria):
 
     total_reais = 0
 
-    for moeda, quantidade in moedas:
+    for moeda, quantidade in moedas.items():
         moeda_em_reais = quantidade * moedas_para_real[moeda]
         total_reais += moeda_em_reais
 
-    for acao, cotacao in cotacoes:
-        moeda_acao = cotacao.info["currency"]
-        preco_original = cotacao.info["Close"]
+    for acao, cotacao in cotacoes.items():
+        moeda_acao = cotacao["currency"]
+        preco_original = cotacao["regularMarketPrice"]
         preco_convertido = preco_original * moedas_para_real[moeda_acao]
 
         acao_em_reais = preco_convertido * acoes[acao]
