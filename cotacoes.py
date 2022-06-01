@@ -27,6 +27,16 @@ def obtem_cotacoes(acoes, dias):
     return dicionario_cotacoes
 
 def moedas_em_real(moedas):
+    """
+    Recebe uma lista de moedas e retorna os valores delas em reais.
+
+    Recebe uma lista de códigos de moedas, busca os valores de conversão para real (BRL) utilizando a biblioteca yfinance e retorna um dicionário ligando os códigos com seus respectivos valores de conversão para real.
+
+    :param moedas: Lista de códigos de moedas
+    :type moedas: list(str)
+    :return: Dicionário ligando os códigos com os valores de conversão
+    :rtype: dict(str, float)
+    """
     textos_moedas = []
     for moeda in moedas:
         texto_conversao = f"{moeda}BRL=X"
@@ -48,7 +58,7 @@ def moedas_em_real(moedas):
 
 def multiplica_cotacao(cotacao, razao):
     """
-    Multiplica uma cotação por um valor
+    Multiplica uma cotação por um valor.
 
     Multiplica os valores "Open", "High", "Low" e "Close" de uma cotação pela razão dada. Multiplicar a cotação diretamente resulta no volume vendido ("Volume") também sendo multiplicado, o que pode ser indesejado.
 
@@ -64,7 +74,7 @@ def multiplica_cotacao(cotacao, razao):
 
 def valor_carteira_reais(carteria):
     """
-    Calcula o valor de uma carteira em reais
+    Calcula o valor de uma carteira em reais.
 
     Busca os valores dos ativos que estão na carteira usando a biblioteca
     yfinance, converte para reais e os soma. A carteira deve conter uma chave
