@@ -47,6 +47,16 @@ def moedas_em_real(moedas):
     return dicionario_valor_real
 
 def multiplica_cotacao(cotacao, razao):
+    """
+    Multiplica uma cotação por um valor
+
+    Multiplica os valores "Open", "High", "Low" e "Close" de uma cotação pela razão dada. Multiplicar a cotação diretamente resulta no volume vendido ("Volume") também sendo multiplicado, o que pode ser indesejado.
+
+    :param cotacao: Cotação obtida de Ticker.history()
+    :type cotacao: pandas.core.frame.DataFrame
+    :param razao: Razão pela qual a cotação será multiplicada
+    :type razao: float
+    """
     cotacao["Open"] *= razao
     cotacao["High"] *= razao
     cotacao["Low"] *= razao
