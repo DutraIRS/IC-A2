@@ -1,4 +1,4 @@
-import yfinance as yf
+import yahooquery as yq
 
 
 def obtem_cotacao(acao, dias):
@@ -6,7 +6,7 @@ def obtem_cotacao(acao, dias):
     Obtém a cotação dos últimos N dias da ação
 
     Recebe o código da ação e o número de dias, busca as cotações utilizando a
-    biblioteca yfinance e retorna um DataFrame contendo as informações obtidas.
+    biblioteca yahooquery e retorna um DataFrame contendo as informações obtidas.
 
     :param acao: Código da ação
     :type acao: str
@@ -15,7 +15,7 @@ def obtem_cotacao(acao, dias):
     :return: As cotações dos últimos N dias
     :rtype: pandas.core.frame.DataFrame
     """
-    ticker = yf.Ticker(acao)
+    ticker = yq.Ticker(acao)
     texto_historico = f"{dias}d"
 
     cotacao = ticker.history(texto_historico)
@@ -27,7 +27,7 @@ def moeda_em_real(moeda):
     Obtém o valor de uma moeda em reais.
 
     Recebe o código de uma moeda, busca o seu valor em reais utilizando a
-    biblioteca yfinance e retorna esse valor.
+    biblioteca yahooquery e retorna esse valor.
 
     :param moeda: O código da moeda
     :type moeda: str
@@ -35,7 +35,7 @@ def moeda_em_real(moeda):
     :rtype: float
     """
     texto_conversao = f"{moeda}BRL=X"
-    ticker = yf.Ticker(texto_conversao)
+    ticker = yq.Ticker(texto_conversao)
 
     moeda_em_real = ticker.info["regularMarketPrice"]
     return moeda_em_real
@@ -46,7 +46,7 @@ def obtem_cotacoes(acoes, dias):
     Obtém as cotações dos últimos N dias para as ações dadas.
 
     Recebe uma lista de códigos de ações e uma quantidade de dias, busca as
-    cotações das ações dos últimos N dias utilizando a biblioteca yfinance e
+    cotações das ações dos últimos N dias utilizando a biblioteca yahooquery e
     retorna um dicionário ligando os códigos das ações com suas respectivas
     cotações.
 
@@ -58,11 +58,11 @@ def obtem_cotacoes(acoes, dias):
     :rtype: dict(str, pandas.core.frame.DataFrame)
     """
     texto_acoes = ' '.join(acoes)
-    tickers_acoes = yf.Tickers(texto_acoes)
+    tickers_acoes = yq.Ticker(texto_acoes)
 
-    dicionario_cotacoes = dict(tickers_acoes.tickers)
+    dicionario_cotacoes = dict(tickers_acoes.price)
     texto_historico = f"{dias}d"
-    for acao, dados in dicionario_cotacoes:
+    for acao, dados in dicionario_cotacoes.items():
         cotacao = dados.history(texto_historico)
         dicionario_cotacoes[acao] = cotacao
 
@@ -74,7 +74,7 @@ def moedas_em_real(moedas):
     Recebe uma lista de moedas e retorna os valores delas em reais.
 
     Recebe uma lista de códigos de moedas, busca os valores de conversão para
-    real (BRL) utilizando a biblioteca yfinance e retorna um dicionário ligando
+    real (BRL) utilizando a biblioteca yahooquery e retorna um dicionário ligando
     os códigos com seus respectivos valores de conversão para real.
 
     :param moedas: Lista de códigos de moedas
@@ -88,7 +88,7 @@ def moedas_em_real(moedas):
         textos_moedas.append(texto_conversao)
 
     texto_conversoes = ' '.join(textos_moedas)
-    tickers_moedas = yf.Tickers(texto_conversoes)
+    tickers_moedas = yq.Tickers(texto_conversoes)
     dicionario_cotacoes = dict(tickers_moedas.tickers)
 
     dicionario_valor_real = {}
@@ -126,7 +126,7 @@ def valor_carteira_reais(carteria):
     Calcula o valor de uma carteira em reais.
 
     Busca os valores dos ativos que estão na carteira usando a biblioteca
-    yfinance, converte para reais e os soma. A carteira deve conter uma chave
+    yahooquery, converte para reais e os soma. A carteira deve conter uma chave
     "moedas" com valor de um dicionário composto de chaves com o código das
     moedas e valores com a quantidade possuida. A carteira também deve conter
     uma chave "acoes" com valor de um dicionário composto de chaves com o
@@ -167,3 +167,5 @@ def valor_carteira_reais(carteria):
         total_reais += acao_em_reais
 
     return acao_em_reais
+
+print(obtem_cotacoes(["NFLX", "AAPL"], 1))
