@@ -51,3 +51,50 @@ def converte_cotacao(cotacao, razao):
     cotacao["High"] *= razao
     cotacao["Low"] *= razao
     cotacao["Close"] *= razao
+
+def valor_carteira_reais(carteria):
+    """
+    Calcula o valor de uma carteira em reais
+
+    Busca os valores dos ativos que estão na carteira usando a biblioteca
+    yfinance, converte para reais e os soma. A carteira deve conter uma chave
+    "moedas" com valor de um dicionário composto de chaves com o código das
+    moedas e valores com a quantidade possuida. A carteira também deve conter
+    uma chave "acoes" com valor de um dicionário composto de chaves com o
+    código das ações e valores com a quantidade possuida.
+
+    :param carteira: A carteira cujos ativos serão avaliados.
+    :type carteira: dict(str, int)
+    :return: O valor da carteira em reais
+    :rtype: int
+    """
+    moedas = carteria["moedas"]
+    acoes = carteria["acoes"]
+
+    cotacoes = obtem_cotacoes(acoes.keys(), 1)
+
+    moedas_para_conversao = set(moedas.keys())
+    for cotacao in cotacoes:
+        moeda_da_cotacao = cotacao.info["currency"]
+        moedas_para_conversao.add(moeda_da_cotacao)
+
+    #Descarta BRL do set pois ele é a moeda para qual se está convertendo
+    moedas_para_conversao.discard("BRL")
+    moedas_para_real = moedas_em_real(moedas_para_conversao)
+    moedas_para_real["BRL"] = 1
+
+    total_reais = 0
+
+    for moeda, quantidade in moedas:
+        moeda_em_reais = quantidade * moedas_para_real[moeda]
+        total_reais += moeda_em_reais
+    
+    for acao, cotacao in cotacoes:
+        moeda_acao = cotacao.info["currency"]
+        preco_original = cotacao.info["Close"]
+        preco_convertido = preco_original * moedas_para_real[moeda_acao]
+
+        acao_em_reais = preco_convertido * acoes[acao]
+        total_reais += acao_em_reais
+    
+    return acao_em_reais
