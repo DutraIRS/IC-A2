@@ -15,6 +15,18 @@ def moeda_em_real(moeda):
     return moeda_em_real
 
 def obtem_cotacoes(acoes, dias):
+    """
+    Obtém as cotações dos últimos N dias para as ações dadas.
+
+    Recebe uma lista de códigos de ações e uma quantidade de dias, busca as cotações das ações dos últimos N dias utilizando a biblioteca yfinance e retorna um dicionário ligando os códigos das ações com suas respectivas cotações.
+
+    :param acoes: Lista dos códigos das ações
+    :type acoes: list(str)
+    :param dias: Quantos dias de cotações devem ser buscados
+    :type dias: int
+    :return: Um dicionário ligando as ações com suas cotações
+    :rtype: dict(str, pandas.core.frame.DataFrame)
+    """
     texto_acoes = ' '.join(acoes)
     tickers_acoes = yf.Tickers(texto_acoes)
 
