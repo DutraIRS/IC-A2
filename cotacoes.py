@@ -34,7 +34,8 @@ def moeda_em_real(moeda):
     texto_conversao = f"{moeda}BRL=X"
     ticker = yq.Ticker(texto_conversao)
 
-    moeda_em_real = ticker.info["regularMarketPrice"]
+    dados_moeda = ticker.price[texto_conversao]
+    moeda_em_real = dados_moeda["regularMarketPrice"]
     return moeda_em_real
 
 
