@@ -77,13 +77,12 @@ def moedas_em_real(moedas):
         textos_moedas.append(texto_conversao)
 
     texto_conversoes = ' '.join(textos_moedas)
-    tickers_moedas = yq.Tickers(texto_conversoes)
-    dicionario_cotacoes = dict(tickers_moedas.tickers)
+    tickers_moedas = yq.Ticker(texto_conversoes)
+    dicionario_cotacoes = tickers_moedas.price
 
     dicionario_valor_real = {}
-    for texto_conversao in dicionario_cotacoes.keys():
-        ticker = dicionario_cotacoes[texto_conversao]
-        moeda_em_real = ticker.info["regularMarketPrice"]
+    for texto_conversao, ticker in dicionario_cotacoes.items():
+        moeda_em_real = ticker["regularMarketPrice"]
 
         moeda = texto_conversao[:-5]
         dicionario_valor_real[moeda] = moeda_em_real
