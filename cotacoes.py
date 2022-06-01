@@ -8,6 +8,17 @@ def obtem_cotacao(acao, dias):
     return cotacao
 
 def moeda_em_real(moeda):
+    """
+    Obtém o valor de uma moeda em reais.
+
+    Recebe o código de uma moeda, busca o seu valor em reais utilizando a
+    biblioteca yfinance e retorna esse valor.
+
+    :param moeda: O código da moeda
+    :type moeda: str
+    :return: O valor da moeda em reais
+    :rtype: float
+    """
     texto_conversao = f"{moeda}BRL=X"
     ticker = yf.Ticker(texto_conversao)
 
