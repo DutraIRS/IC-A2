@@ -62,8 +62,8 @@ def obtem_cotacoes(acoes, dias):
 
     dicionario_cotacoes = dict(tickers_acoes.tickers)
     texto_historico = f"{dias}d"
-    for acao in dicionario_cotacoes.keys():
-        cotacao = dicionario_cotacoes[acao].history(texto_historico)
+    for acao, dados in dicionario_cotacoes:
+        cotacao = dados.history(texto_historico)
         dicionario_cotacoes[acao] = cotacao
 
     return dicionario_cotacoes
