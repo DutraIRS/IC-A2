@@ -1,5 +1,6 @@
 import qrcode
 import openpyxl as opx
+from openpyxl.drawing.image import Image
 #openpyxl requer a biblioteca pillow instalada para trabalhar com imagens
 
 def criar_qr(arquivo, planilha, total, celula):
@@ -15,9 +16,12 @@ def criar_qr(arquivo, planilha, total, celula):
 
     mensagem = str('Esta carteira de investimentos vale ' + str(valor) + ' ao todo.')
     img = qrcode.make(mensagem)
-    img.save(str(mensagem + '.png'))
+    img.save(str('aaa.png'))
+    img = Image("aaa.png")
 #cria e salva a imagem
 
     sh.add_image(img, celula)
     wb.save(arquivo)
 # insere a imagem e salva o arquivo
+
+criar_qr('a.xlsx', 'Plan1', 'A1', 'D4')
