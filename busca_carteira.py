@@ -27,6 +27,16 @@ def encontrar_div_com_classe(conteudo, classe):
     return conteudo.find("div", class_ = classe)
 
 def ler_table_data(conteudo):
+    """Retorna um dicionário com o conteúdo de todas tags 'td'
+
+    As strings de todas as tags 'td' encontradas no parâmetro são agrupadas em
+    pares chave-valor de um dicionário na ordem que forem encontradas. O parâmetro deve ter um número par de tags 'td' e cada segunda tag deve conter uma string que possa ser convertida em float.
+
+    :param conteudo: Onde serão buscadas as tags 'td'
+    :type conteudo: bs4.element.Tag
+    :return: O dicionário com o conteúdo das tags 'td'
+    :rtype: dict(str, float)
+    """    
     celulas = conteudo.find_all("td")
     dicionario = {}
 
