@@ -30,7 +30,9 @@ def ler_table_data(conteudo):
     """Retorna um dicionário com o conteúdo de todas tags 'td'
 
     As strings de todas as tags 'td' encontradas no parâmetro são agrupadas em
-    pares chave-valor de um dicionário na ordem que forem encontradas. O parâmetro deve ter um número par de tags 'td' e cada segunda tag deve conter uma string que possa ser convertida em float.
+    pares chave-valor de um dicionário na ordem que forem encontradas. O
+    parâmetro deve ter um número par de tags 'td' e cada segunda tag deve
+    conter uma string que possa ser convertida em float.
 
     :param conteudo: Onde serão buscadas as tags 'td'
     :type conteudo: bs4.element.Tag
@@ -49,7 +51,11 @@ def ler_table_data(conteudo):
 def ler_ativos(conteudo):
     """Retorna os ativos contidos no conteúdo recebido
 
-    Retorna os ativos contidos no conteúdo em um dicionário de duas chaves. As moedas são armazenadas em um dicionário na chave 'moedas' e as ações são armazenadas em um dicionário na chave 'acoes'. Os ativos devem estar em pares de tags 'td' na ordem (nome, quantidade) que devem estar dentro de divs com a classe 'moeda' para as moedas e 'acao' para ações.
+    Retorna os ativos contidos no conteúdo em um dicionário de duas chaves. As
+    moedas são armazenadas em um dicionário na chave 'moedas' e as ações são
+    armazenadas em um dicionário na chave 'acoes'. Os ativos devem estar em
+    pares de tags 'td' na ordem (nome, quantidade) que devem estar dentro de
+    divs com a classe 'moeda' para as moedas e 'acao' para ações.
 
     :param conteudo: Onde serão buscados os ativos
     :type conteudo: bs4.BeautifulSoup
@@ -66,6 +72,17 @@ def ler_ativos(conteudo):
     return ativos
 
 def buscar_carteira(url):
+    """Busca a carteira na URL recebida
+
+    Retorna os ativos contidos no site em um dicionário de duas chaves. As
+    moedas são armazenadas em um dicionário na chave 'moedas' e as ações são
+    armazenadas em um dicionário na chave 'acoes'.
+
+    :param url: A URL onde se encontra a carteira
+    :type url: str
+    :return: Um dicionário com os ativos
+    :rtype: dict(str, dict(str, float))
+    """    
     site = buscar_site(url)
     carteira = ler_ativos(site)
     return carteira
