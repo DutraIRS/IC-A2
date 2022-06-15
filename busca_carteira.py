@@ -2,6 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 
 def buscar_site(url):
+    """Retorna o site da url parseado usando BS4 e lxml
+
+    :param url: URL do site
+    :type url: str
+    :return: Informações do site parseadas com BS4 e lxml
+    :rtype: bs4.BeautifulSoup
+    """    
     resposta = requests.get(url)
     site = BeautifulSoup(resposta.text, "lxml")
 
