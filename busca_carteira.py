@@ -47,6 +47,15 @@ def ler_table_data(conteudo):
     return dicionario
 
 def ler_ativos(conteudo):
+    """Retorna os ativos contidos no conteúdo recebido
+
+    Retorna os ativos contidos no conteúdo em um dicionário de duas chaves. As moedas são armazenadas em um dicionário na chave 'moedas' e as ações são armazenadas em um dicionário na chave 'acoes'. Os ativos devem estar em pares de tags 'td' na ordem (nome, quantidade) que devem estar dentro de divs com a classe 'moeda' para as moedas e 'acao' para ações.
+
+    :param conteudo: Onde serão buscados os ativos
+    :type conteudo: bs4.BeautifulSoup
+    :return: O dicionário com os ativos
+    :rtype: dict(str, dict(str, float))
+    """    
     div_moedas = encontrar_div_com_classe(conteudo, "moeda")
     moedas = ler_table_data(div_moedas)
 
