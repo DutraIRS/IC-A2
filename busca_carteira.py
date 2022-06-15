@@ -15,6 +15,15 @@ def buscar_site(url):
     return site
 
 def encontrar_div_com_classe(conteudo, classe):
+    """Retorna o primeiro div com a classe especificada
+
+    :param conteudo: De onde será obtido o div
+    :type conteudo: bs4.BeautifulSoup
+    :param classe: A classe que o div deve ter
+    :type classe: str
+    :return: O primeiro div encontrado que tenha a classe
+    :rtype: bs4.element.Tag
+    """    
     return conteudo.find("div", class_ = classe)
 
 def ler_table_data(conteudo):
