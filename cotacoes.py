@@ -105,7 +105,7 @@ def multiplica_cotacao(cotacao, razao):
     cotacao["Close"] *= razao
 
 
-def valor_carteira_reais(carteria):
+def valor_carteira_reais(carteira):
     """Calcula o valor de uma carteira em reais.
 
     Busca os valores dos ativos que estão na carteira usando a biblioteca
@@ -120,36 +120,19 @@ def valor_carteira_reais(carteria):
     :return: O valor da carteira em reais
     :rtype: int
     """
-    moedas = carteria["moedas"]
-    acoes = carteria["acoes"]
-
-    cotacoes = obtem_cotacoes(acoes.keys())
-
-    moedas_para_conversao = set(moedas.keys())
-    for cotacao in cotacoes.values():
-        moeda_da_cotacao = cotacao["currency"]
-        moedas_para_conversao.add(moeda_da_cotacao)
-
-    # Descarta BRL do set pois ele é a moeda para qual se está convertendo
-    moedas_para_conversao.discard("BRL")
-    moedas_para_real = moedas_em_real(moedas_para_conversao)
-    moedas_para_real["BRL"] = 1
+    valores = valor_ativos_reais(carteira)
+    acoes = valores["acoes"]
+    moedas = valores["moedas"]
 
     total_reais = 0
 
-    for moeda, quantidade in moedas.items():
-        moeda_em_reais = quantidade * moedas_para_real[moeda]
-        total_reais += moeda_em_reais
+    for valor in acoes.values():
+        total_reais += valor
 
-    for acao, cotacao in cotacoes.items():
-        moeda_acao = cotacao["currency"]
-        preco_original = cotacao["regularMarketPrice"]
-        preco_convertido = preco_original * moedas_para_real[moeda_acao]
+    for valor in moedas.values():
+        total_reais += valor
 
-        acao_em_reais = preco_convertido * acoes[acao]
-        total_reais += acao_em_reais
-
-    return acao_em_reais
+    return total_reais
 
 
 def hist_acoes(acoes, dias):
