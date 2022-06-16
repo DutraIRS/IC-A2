@@ -152,18 +152,19 @@ def valor_carteira_reais(carteria):
     return acao_em_reais
 
 
-def obtem_historico_acao(acao, dias):
-    """Obtem o histórico da ação com o número de dias especificado
-    :param ativo: Código da ação
-    :type ativo: str
+def historico_acoes(acoes, dias):
+    """Obtem o histórico das ações com o número de dias especificado
+    :param ativo: Lista de códigos das ações
+    :type ativo: list(str)
     :param dias: Número de dias de histórico
     :type dias: int
-    :return: Data frame contendo o histórico
+    :return: Data frame contendo os históricos
     :rtype: pandas.core.frame.DataFrame
     """
-    ticker = yq.Ticker(acao)
+    texto_acoes = ' '.join(acoes)
+    ticker = yq.Ticker(texto_acoes)
 
-    string_periodo = f"{dias}d"
-    df = ticker.history(string_periodo)
+    texto_periodo = f"{dias}d"
+    df = ticker.history(texto_periodo)
 
-    return df 
+    return df
