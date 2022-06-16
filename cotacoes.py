@@ -182,7 +182,7 @@ def hist_carteira_reais(carteira, dias):
     :type carteira: dict(str, dict(str, float))
     :param dias: Número de dias de histórico
     :type dias: int
-    :return: Dicionário de duas chaves com os históricos das ações e das moedas
+    :return: Dicionário de duas entradas com os históricos
     :rtype: dict(str, pandas.core.frame.DataFrame)
     """
     moedas = carteira["moedas"]
