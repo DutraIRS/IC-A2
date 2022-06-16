@@ -191,3 +191,54 @@ def hist_moedas_real(moedas, dias):
     df = ticker.history(texto_periodo)
 
     return df
+
+
+def hist_carteira_reais(carteira, dias):
+    """Obtém os históricos em reais de todos ativos da carteira
+    :param carteira: A carteira com os ativos
+    :type carteira: dict(str, dict(str, float))
+    :param dias: Número de dias de histórico
+    :type dias: int
+    :return: Dicionário de duas chaves com os históricos das ações e das moedas
+    :rtype: dict(str, pandas.core.frame.DataFrame)
+    """    
+    moedas = carteira["moedas"]
+    acoes = carteira["acoes"]
+
+    cotacoes = obtem_cotacoes(acoes.keys())
+
+    moedas_para_conversao = set(moedas.keys())
+    for cotacao in cotacoes.values():
+        moeda_da_cotacao = cotacao["currency"]
+        moedas_para_conversao.add(moeda_da_cotacao)
+
+    hist_conversoes = hist_moedas_real(moedas_para_conversao, dias)
+    historico_acoes = hist_acoes(acoes.keys(), dias)
+
+    # Obtém os nomes dos índices de conversão. (ex: USDBRL=X)
+    nomes_conversoes = hist_conversoes.index.get_level_values("symbol")
+
+    dict_novos_nomes = {}
+    for nome_antigo in nomes_conversoes:
+        novo_nome = nome_antigo[:-5]
+        dict_novos_nomes[nome_antigo] = novo_nome
+
+    # Remove o texto "BRL=X" dos índices
+    hist_conversoes = hist_conversoes.rename(index = dict_novos_nomes)
+
+    for acao in acoes:
+        moeda_acao = cotacoes[acao]["currency"]
+        linhas_moeda_indexadas = hist_conversoes.loc[[moeda_acao]]
+
+        # Remove os índices para permitir a multiplicação de data frames
+        linhas_moeda = linhas_moeda_indexadas.reset_index(level = "symbol", drop = True)
+
+        # Multiplica os valores entrada por entrada, exceto o volume
+        historico_acoes.loc[[acao], historico_acoes.columns != "volume"] *= linhas_moeda
+
+    # Remove as moedas usadas apenas para calcular os valores das ações
+    hist_conversoes = hist_conversoes.loc[moedas.keys()]
+
+    historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
+
+    return historicos
