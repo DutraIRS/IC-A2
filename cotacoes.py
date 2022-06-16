@@ -3,8 +3,7 @@ import busca_carteira as bc
 
 
 def obtem_cotacao(acao):
-    """
-    Obtém a cotação da ação
+    """Obtém a cotação da ação
 
     Recebe o código da ação, busca a cotação utilizando a biblioteca yahooquery
     e retorna um dicionário contendo as informações obtidas.
@@ -21,8 +20,7 @@ def obtem_cotacao(acao):
 
 
 def moeda_em_real(moeda):
-    """
-    Obtém o valor de uma moeda em reais.
+    """Obtém o valor de uma moeda em reais.
 
     Recebe o código de uma moeda, busca o seu valor em reais utilizando a
     biblioteca yahooquery e retorna esse valor.
@@ -41,8 +39,7 @@ def moeda_em_real(moeda):
 
 
 def obtem_cotacoes(acoes):
-    """
-    Obtém as cotações das ações dadas.
+    """Obtém as cotações das ações dadas.
 
     Recebe uma lista de códigos de ações, busca as cotações das ações utilizando a biblioteca yahooquery e retorna um dicionário ligando os códigos das ações com suas respectivas cotações.
 
@@ -60,8 +57,7 @@ def obtem_cotacoes(acoes):
 
 
 def moedas_em_real(moedas):
-    """
-    Recebe uma lista de moedas e retorna os valores delas em reais.
+    """Recebe uma lista de moedas e retorna os valores delas em reais.
 
     Recebe uma lista de códigos de moedas, busca os valores de conversão para
     real (BRL) utilizando a biblioteca yahooquery e retorna um dicionário ligando
@@ -92,8 +88,7 @@ def moedas_em_real(moedas):
 
 
 def multiplica_cotacao(cotacao, razao):
-    """
-    Multiplica uma cotação por um valor.
+    """Multiplica uma cotação por um valor.
 
     Multiplica os valores "Open", "High", "Low" e "Close" de uma cotação pela
     razão dada. Multiplicar a cotação diretamente resulta no volume vendido
@@ -111,8 +106,7 @@ def multiplica_cotacao(cotacao, razao):
 
 
 def valor_carteira_reais(carteria):
-    """
-    Calcula o valor de uma carteira em reais.
+    """Calcula o valor de uma carteira em reais.
 
     Busca os valores dos ativos que estão na carteira usando a biblioteca
     yahooquery, converte para reais e os soma. A carteira deve conter uma chave
