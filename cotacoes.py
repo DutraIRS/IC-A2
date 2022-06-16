@@ -161,7 +161,7 @@ def hist_moedas_real(moedas, dias):
     :type dias: int
     :return: Data frame contendo os históricos
     :rtype: pandas.core.frame.DataFrame
-    """    
+    """
     textos_conversao = []
     for moeda in moedas:
         texto_convesao = f"{moeda}BRL=X"
@@ -184,7 +184,7 @@ def hist_carteira_reais(carteira, dias):
     :type dias: int
     :return: Dicionário de duas chaves com os históricos das ações e das moedas
     :rtype: dict(str, pandas.core.frame.DataFrame)
-    """    
+    """
     moedas = carteira["moedas"]
     acoes = carteira["acoes"]
 
@@ -207,17 +207,19 @@ def hist_carteira_reais(carteira, dias):
         dict_novos_nomes[nome_antigo] = novo_nome
 
     # Remove o texto "BRL=X" dos índices
-    hist_conversoes = hist_conversoes.rename(index = dict_novos_nomes)
+    hist_conversoes = hist_conversoes.rename(index=dict_novos_nomes)
 
     for acao in acoes:
         moeda_acao = cotacoes[acao]["currency"]
         linhas_moeda_indexadas = hist_conversoes.loc[[moeda_acao]]
 
         # Remove os índices para permitir a multiplicação de data frames
-        linhas_moeda = linhas_moeda_indexadas.reset_index(level = "symbol", drop = True)
+        linhas_moeda = linhas_moeda_indexadas.reset_index(
+            level="symbol", drop=True)
 
         # Multiplica os valores entrada por entrada, exceto o volume
-        historico_acoes.loc[[acao], historico_acoes.columns != "volume"] *= linhas_moeda
+        historico_acoes.loc[[acao],
+                            historico_acoes.columns != "volume"] *= linhas_moeda
 
     # Remove as moedas usadas apenas para calcular os valores das ações
     hist_conversoes = hist_conversoes.loc[moedas.keys()]
@@ -233,7 +235,7 @@ def valor_ativos_reais(carteira):
     :type carteira: dict(str, dict(str, float))
     :return: Dicionário com duas entradas "moedas" e "acoes" com os valores
     :rtype: dict(str, dict(str, float))
-    """    
+    """
     moedas = carteira["moedas"]
     acoes = carteira["acoes"]
 
