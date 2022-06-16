@@ -153,7 +153,7 @@ def valor_carteira_reais(carteria):
 
 
 def hist_acoes(acoes, dias):
-    """Obtem o histórico das ações com o número de dias especificado
+    """Obtém o histórico das ações com o número de dias especificado
     :param ativo: Lista de códigos das ações
     :type ativo: list(str)
     :param dias: Número de dias de histórico
@@ -163,6 +163,29 @@ def hist_acoes(acoes, dias):
     """
     texto_acoes = ' '.join(acoes)
     ticker = yq.Ticker(texto_acoes)
+
+    texto_periodo = f"{dias}d"
+    df = ticker.history(texto_periodo)
+
+    return df
+
+
+def hist_moedas_real(moedas, dias):
+    """Obtém o histórico do valor das moedas em reais
+    :param moedas: Lista dos códigos das moedas
+    :type moedas: list(str)
+    :param dias: Número de dias de histórico
+    :type dias: int
+    :return: Data frame contendo os históricos
+    :rtype: pandas.core.frame.DataFrame
+    """    
+    textos_conversao = []
+    for moeda in moedas:
+        texto_convesao = f"{moeda}BRL=X"
+        textos_conversao.append(texto_convesao)
+
+    texto_moedas = ' '.join(textos_conversao)
+    ticker = yq.Ticker(texto_moedas)
 
     texto_periodo = f"{dias}d"
     df = ticker.history(texto_periodo)
