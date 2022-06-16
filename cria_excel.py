@@ -5,10 +5,10 @@ import xlsxwriter
 
 def criar_excel(url):
     carteira = busca_carteira.buscar_carteira(url)
-    #
     ativos = list(carteira.items())
     moedas = ativos[0]
     acoes = ativos[1]
+    # Lê o dicionário advindo do módulo busca_carteira e transforma em lista
 
     moedas_nomes_quantidades = moedas[1]
     moedas_nomes = []
@@ -27,13 +27,13 @@ def criar_excel(url):
         acoes_nomes.append(key) 
     for val in acoes_nomes_quantidades.values():
         acoes_quantidades.append(val)
-    #openpyxl
+    # Cria Excel com openpyxl
     wb = openpyxl.Workbook()
     wb.create_sheet("Carteira")
     wb.remove(wb['Sheet'])
     wb.save("Carteira.xlsx")
         
-
+    # Adiciona as informações advindas do webscraping no Excel
     coluna_moedas = {"moedas": moedas_nomes, "quantidade": moedas_quantidades}
     coluna_acoes = {"ações": acoes_nomes, "quantidade": acoes_quantidades}
     df = pd.DataFrame(coluna_moedas)
