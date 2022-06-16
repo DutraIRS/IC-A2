@@ -152,7 +152,7 @@ def valor_carteira_reais(carteria):
     return acao_em_reais
 
 
-def historico_acoes(acoes, dias):
+def hist_acoes(acoes, dias):
     """Obtem o histórico das ações com o número de dias especificado
     :param ativo: Lista de códigos das ações
     :type ativo: list(str)
