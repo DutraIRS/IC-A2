@@ -137,7 +137,7 @@ def valor_carteira_reais(carteira):
 
 def hist_acoes(acoes, dias):
     """Obtém o histórico das ações com o número de dias especificado
-    
+
     :param ativo: Lista de códigos das ações
     :type ativo: list(str)
     :param dias: Número de dias de histórico
@@ -232,48 +232,9 @@ def hist_carteira_reais(carteira, dias):
     return historicos
 
 
-def valor_ativos_reais(carteira):
-    """Calcula quantos reais a carteira tem em cada ativo
-
-    :param carteira: A carteira com os ativos
-    :type carteira: dict(str, dict(str, float))
-    :return: Dicionário com duas entradas "moedas" e "acoes" com os valores
-    :rtype: dict(str, dict(str, float))
-    """
-    moedas = carteira["moedas"]
-    acoes = carteira["acoes"]
-
-    cotacoes = obtem_cotacoes(acoes.keys())
-
-    moedas_para_conversao = set(moedas.keys())
-    for cotacao in cotacoes.values():
-        moeda_da_cotacao = cotacao["currency"]
-        moedas_para_conversao.add(moeda_da_cotacao)
-
-    # Descarta BRL do set pois ele é a moeda para qual se está convertendo
-    moedas_para_conversao.discard("BRL")
-    moedas_para_real = moedas_em_real(moedas_para_conversao)
-    moedas_para_real["BRL"] = 1
-
-    ativos_em_real = {"acoes": {}, "moedas": {}}
-
-    for moeda, quantidade in moedas.items():
-        moeda_em_reais = quantidade * moedas_para_real[moeda]
-        ativos_em_real["moedas"][moeda] = moeda_em_reais
-
-    for acao, cotacao in cotacoes.items():
-        moeda_acao = cotacao["currency"]
-        preco_original = cotacao["regularMarketPrice"]
-        preco_convertido = preco_original * moedas_para_real[moeda_acao]
-
-        acao_em_reais = preco_convertido * acoes[acao]
-        ativos_em_real["acoes"][acao] = acao_em_reais
-
-    return ativos_em_real
-
 def unidade_ativos_real(carteira):
     """Calcula quanto vale a unidade de cada ativo em reais
-    
+
     :param carteira: A carteira com os ativos
     :type carteira: dict(str, dict(str, float))
     :return: Dicionário com duas entradas "moedas" e "acoes" com os valores
@@ -305,9 +266,40 @@ def unidade_ativos_real(carteira):
         moeda_acao = cotacao["currency"]
         preco_original = cotacao["regularMarketPrice"]
         preco_convertido = preco_original * moedas_para_real[moeda_acao]
-        
+
         valor_un_acoes[acao] = preco_convertido
-    
+
     unidade_ativo_reais = {"acoes": valor_un_acoes, "moedas": valor_un_moedas}
 
     return unidade_ativo_reais
+
+
+def valor_ativos_reais(carteira):
+    """Calcula quantos reais a carteira tem em cada ativo
+
+    :param carteira: A carteira com os ativos
+    :type carteira: dict(str, dict(str, float))
+    :return: Dicionário com duas entradas "moedas" e "acoes" com os valores
+    :rtype: dict(str, dict(str, float))
+    """
+    moedas = carteira["moedas"]
+    acoes = carteira["acoes"]
+
+    valores_un = unidade_ativos_real(carteira)
+    valor_un_acoes = valores_un["acoes"]
+    valor_un_moedas = valores_un["moedas"]
+
+    total_por_acao = {}
+    total_por_moeda = {}
+
+    for moeda, quantidade in moedas.items():
+        total_moeda = quantidade * valor_un_moedas[moeda]
+        total_por_moeda[moeda] = total_moeda
+
+    for acao, quantidade in acoes.items():
+        total_acao = quantidade * valor_un_acoes[acao]
+        total_por_acao[acao] = total_acao
+
+    ativos_em_real = {"acoes": total_por_acao, "moedas": total_por_moeda}
+
+    return ativos_em_real
