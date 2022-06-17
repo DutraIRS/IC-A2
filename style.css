@@ -50,7 +50,7 @@ nav ul li a:hover {
 }
 /* Tabelas de investimentos */
 /* Formatação da tabela de ações */
-div .acoes {
+div .acao {
     margin-top: 30px;
     margin-left: auto;
     margin-right: auto;
@@ -59,19 +59,19 @@ div .acoes {
     text-align: center;
 }
 
-div .acoes th {
+div .acao th {
     background-color: #296bf8;
     color: #ecedea;
     text-align: left;
     font-weight: bold;
 }
 
-div .acoes td {
+div .acao td {
     border-bottom: 1px solid;
 }
 
 /* Formatação da tabela de moedas */
-div .moedas {
+div .moeda {
     margin-top: 30px;
     margin-left: auto;
     margin-right: auto;
@@ -80,14 +80,14 @@ div .moedas {
     text-align: center;
 }
 
-div .moedas th {
+div .moeda th {
     background-color: #296bf8;
     color: #ecedea;
     text-align: left;
     font-weight: bold;
 }
 
-div .moedas td {
+div .moeda td {
     border-bottom: 1px solid;
 }
 
