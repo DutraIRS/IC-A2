@@ -67,12 +67,23 @@ def ler_ativos(conteudo):
     :rtype: dict(str, dict(str, float))
     """
     div_moedas = encontrar_div_com_classe(conteudo, "moeda")
-    moedas = ler_table_data(div_moedas)
+    moedas_lidas = ler_table_data(div_moedas)
+
+    # Trata as moedas para conterem apenas o código
+    moedas = {}
+    for moeda_lida, quantidade in moedas_lidas.items():
+        if moeda_lida.endswith("BRL=X"):
+            codigo_moeda = moeda_lida[0:3]
+        else:
+            codigo_moeda = moeda_lida
+        
+        moedas[codigo_moeda] = quantidade
 
     div_acoes = encontrar_div_com_classe(conteudo, "acao")
     acoes = ler_table_data(div_acoes)
 
     ativos = {"moedas": moedas, "acoes": acoes}
+
     return ativos
 
 
