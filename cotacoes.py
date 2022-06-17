@@ -70,7 +70,11 @@ def moedas_em_real(moedas):
     """
     textos_moedas = []
     for moeda in moedas:
-        texto_conversao = f"{moeda}BRL=X"
+        if moeda.endswith("=X"):
+            texto_conversao = moeda
+        else:
+            texto_conversao = f"{moeda}BRL=X"
+        
         textos_moedas.append(texto_conversao)
 
     texto_conversoes = ' '.join(textos_moedas)
@@ -81,7 +85,11 @@ def moedas_em_real(moedas):
     for texto_conversao, ticker in dicionario_cotacoes.items():
         moeda_em_real = ticker["regularMarketPrice"]
 
-        moeda = texto_conversao[:-5]
+        if texto_conversao.endswith("BRL=X"):
+            moeda = texto_conversao[:-5]
+        else:
+            moeda = texto_conversao
+        
         dicionario_valor_real[moeda] = moeda_em_real
 
     return dicionario_valor_real
