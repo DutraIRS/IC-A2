@@ -73,10 +73,17 @@ def ler_ativos(conteudo):
     moedas = {}
     for moeda_lida, quantidade in moedas_lidas.items():
         if moeda_lida.endswith("BRL=X"):
-            codigo_moeda = moeda_lida[0:3]
+            if moeda_lida == "BRL=X":
+                # O código "BRL=X" retorna por padrão o valor do dólar em reais
+                codigo_moeda = "USD"
+                print("-> Atenção! \"BRL=X\" convertido para \"USD\" pelo padrão do YahooFinance")
+            else:
+                codigo_moeda = moeda_lida[0:3]
+                print(f"-> Atenção! \"{moeda_lida}\" convertido para \"{codigo_moeda}\"")
+
         else:
             codigo_moeda = moeda_lida
-        
+
         moedas[codigo_moeda] = quantidade
 
     div_acoes = encontrar_div_com_classe(conteudo, "acao")
