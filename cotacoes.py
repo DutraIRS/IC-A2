@@ -68,20 +68,36 @@ def moedas_em_real(moedas):
     :return: Dicionário ligando os códigos com os valores de conversão
     :rtype: dict(str, float)
     """
+    dicionario_valor_real = {}
+    conjunto_moedas = set(moedas)
+
+    # Checa se BRL está no conjunto pois ele não precisado ser buscado
+    if "BRL" in conjunto_moedas:
+        dicionario_valor_real["BRL"] = 1
+        conjunto_moedas.remove("BRL")
+
     textos_moedas = []
-    for moeda in moedas:
-        texto_conversao = f"{moeda}BRL=X"
+    for moeda in conjunto_moedas:
+        # Checa se o texto já está no formato necessário para o ticker
+        if moeda.endswith("=X"):
+            texto_conversao = moeda
+        else:
+            texto_conversao = f"{moeda}BRL=X"
+        
         textos_moedas.append(texto_conversao)
 
     texto_conversoes = ' '.join(textos_moedas)
     tickers_moedas = yq.Ticker(texto_conversoes)
     dicionario_cotacoes = tickers_moedas.price
 
-    dicionario_valor_real = {}
     for texto_conversao, ticker in dicionario_cotacoes.items():
         moeda_em_real = ticker["regularMarketPrice"]
 
-        moeda = texto_conversao[:-5]
+        if texto_conversao.endswith("BRL=X"):
+            moeda = texto_conversao[:-5]
+        else:
+            moeda = texto_conversao
+        
         dicionario_valor_real[moeda] = moeda_em_real
 
     return dicionario_valor_real
@@ -157,15 +173,19 @@ def hist_acoes(acoes, dias):
 def hist_moedas_real(moedas, dias):
     """Obtém o histórico do valor das moedas em reais
 
-    :param moedas: Lista dos códigos das moedas
+    :param moedas: Lista dos códigos das moedas, ignorando "BRL" se presente
     :type moedas: list(str)
     :param dias: Número de dias de histórico
     :type dias: int
     :return: Data frame contendo os históricos
     :rtype: pandas.core.frame.DataFrame
     """
+    # Descarta BRL pois ele não posssui histórico de conversão para si mesmo
+    conjunto_moedas = set(moedas)
+    conjunto_moedas.discard("BRL")
+
     textos_conversao = []
-    for moeda in moedas:
+    for moeda in conjunto_moedas:
         texto_convesao = f"{moeda}BRL=X"
         textos_conversao.append(texto_convesao)
 
@@ -174,6 +194,9 @@ def hist_moedas_real(moedas, dias):
 
     texto_periodo = f"{dias}d"
     df = ticker.history(texto_periodo)
+
+    # Remove entradas duplicadas
+    df = df[~df.index.duplicated(keep = "last")]
 
     return df
 
@@ -214,6 +237,10 @@ def hist_carteira_reais(carteira, dias):
 
     for acao in acoes:
         moeda_acao = cotacoes[acao]["currency"]
+
+        if moeda_acao == "BRL":
+            continue
+
         linhas_moeda_indexadas = hist_conversoes.loc[[moeda_acao]]
 
         # Remove os índices para permitir a multiplicação de data frames
@@ -224,8 +251,13 @@ def hist_carteira_reais(carteira, dias):
         historico_acoes.loc[[acao],
                             historico_acoes.columns != "volume"] *= linhas_moeda
 
+    # Prepara as moedas da carteira, exceto BRL por não possuir histórico
+    lista_moedas = list(moedas.keys())
+    if "BRL" in lista_moedas:
+        lista_moedas.remove("BRL")
+
     # Remove as moedas usadas apenas para calcular os valores das ações
-    hist_conversoes = hist_conversoes.loc[moedas.keys()]
+    hist_conversoes = hist_conversoes.loc[lista_moedas]
 
     historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
 
@@ -250,10 +282,7 @@ def unidade_ativos_real(carteira):
         moeda_da_cotacao = cotacao["currency"]
         moedas_para_conversao.add(moeda_da_cotacao)
 
-    # Descarta BRL do set pois ele é a moeda para qual se está convertendo
-    moedas_para_conversao.discard("BRL")
     moedas_para_real = moedas_em_real(moedas_para_conversao)
-    moedas_para_real["BRL"] = 1
 
     valor_un_acoes = {}
     valor_un_moedas = {}

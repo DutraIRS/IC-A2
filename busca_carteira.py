@@ -67,12 +67,30 @@ def ler_ativos(conteudo):
     :rtype: dict(str, dict(str, float))
     """
     div_moedas = encontrar_div_com_classe(conteudo, "moeda")
-    moedas = ler_table_data(div_moedas)
+    moedas_lidas = ler_table_data(div_moedas)
+
+    # Trata as moedas para conterem apenas o código
+    moedas = {}
+    for moeda_lida, quantidade in moedas_lidas.items():
+        if moeda_lida.endswith("BRL=X"):
+            if moeda_lida == "BRL=X":
+                # O código "BRL=X" retorna por padrão o valor do dólar em reais
+                codigo_moeda = "USD"
+                print("-> Atenção! \"BRL=X\" convertido para \"USD\" pelo padrão do YahooFinance")
+            else:
+                codigo_moeda = moeda_lida[0:3]
+                print(f"-> Atenção! \"{moeda_lida}\" convertido para \"{codigo_moeda}\"")
+
+        else:
+            codigo_moeda = moeda_lida
+
+        moedas[codigo_moeda] = quantidade
 
     div_acoes = encontrar_div_com_classe(conteudo, "acao")
     acoes = ler_table_data(div_acoes)
 
     ativos = {"moedas": moedas, "acoes": acoes}
+
     return ativos
 
 
