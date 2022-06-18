@@ -114,7 +114,7 @@ def valor_carteira_reais(carteira):
     return total_reais
 
 
-def dict_para_df(dicionario):
+def concatena_historico(dicionario):
     """Obtém os dataframes dos valores do dicionário e os concatena juntos
 
     Obtém os dataframes dos valores do dicionário e os une usando a chave como
@@ -158,7 +158,7 @@ def hist_acoes(acoes, dias):
 
     # Se algum ativo não tiver histórico, um dicionário é retornado
     if isinstance(df, dict):
-        df = dict_para_df(df)
+        df = concatena_historico(df)
 
     return df
 
@@ -194,7 +194,7 @@ def hist_moedas_real(moedas, dias):
 
     # Se algum ativo não tiver histórico, um dicionário é retornado
     if isinstance(df, dict):
-        df = dict_para_df(df)
+        df = concatena_historico(df)
 
     # Remove entradas duplicadas
     df = df[~df.index.duplicated(keep="last")]
