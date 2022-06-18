@@ -1,3 +1,4 @@
+import pandas as pd
 import yahooquery as yq
 import busca_carteira as bc
 
@@ -115,6 +116,32 @@ def valor_carteira_reais(carteira):
     return total_reais
 
 
+def dict_para_df(dicionario):
+    """Obtém os dataframes dos valores do dicionário e os concatena juntos
+
+    Obtém os dataframes dos valores do dicionário e os une usando a chave como
+    índice de nome "symbol" no dataframe resultante
+
+    :param dicionario: Dicionário 
+    :type dicionario: dict(str, any)
+    :return: Dataframe resultante da concatenação
+    :rtype: pandas.core.frame.DataFrame
+    """
+    data_frames = {}
+
+    for chave, valor in dicionario.items():
+        # Encontra todos data frames para juntar depois
+        if isinstance(valor, pd.DataFrame):
+            # Renomeia o índice para ser consistente com outros data frames
+            valor.index.name = "date"
+            data_frames[chave] = valor
+
+    # Especifica que a chave do dicionário será um novo índice chamado "symbol"
+    df = pd.concat(data_frames, names=["symbol"])
+
+    return df
+
+
 def hist_acoes(acoes, dias):
     """Obtém o histórico das ações com o número de dias especificado
 
@@ -130,6 +157,10 @@ def hist_acoes(acoes, dias):
 
     texto_periodo = f"{dias}d"
     df = ticker.history(texto_periodo)
+
+    # Se algum ativo não tiver histórico, um dicionário é retornado
+    if isinstance(df, dict):
+        df = dict_para_df(df)
 
     return df
 
@@ -162,6 +193,10 @@ def hist_moedas_real(moedas, dias):
 
     texto_periodo = f"{dias}d"
     df = ticker.history(texto_periodo)
+
+    # Se algum ativo não tiver histórico, um dicionário é retornado
+    if isinstance(df, dict):
+        df = dict_para_df(df)
 
     # Remove entradas duplicadas
     df = df[~df.index.duplicated(keep="last")]
@@ -206,7 +241,11 @@ def hist_carteira_reais(carteira, dias):
     # Remove o texto "BRL=X" dos índices
     hist_conversoes = hist_conversoes.rename(index=dict_novos_nomes)
 
-    for acao in acoes:
+    conjunto_acoes = set(acoes.keys())
+    acoes_com_hist = historico_acoes.index.get_level_values("symbol")
+    acoes_carteira_com_hist = conjunto_acoes.intersection(acoes_com_hist)
+
+    for acao in acoes_carteira_com_hist:
         moeda_acao = cotacoes[acao]["currency"]
 
         if moeda_acao == "BRL":
@@ -222,13 +261,15 @@ def hist_carteira_reais(carteira, dias):
         historico_acoes.loc[[acao],
                             historico_acoes.columns != "volume"] *= linhas_moeda
 
-    # Prepara as moedas da carteira, exceto BRL por não possuir histórico
-    lista_moedas = list(moedas.keys())
-    if "BRL" in lista_moedas:
-        lista_moedas.remove("BRL")
+    conjunto_moedas = set(moedas.keys())
+    moedas_com_historico = dict_novos_nomes.values()
+
+    # Lista de moedas na carteira que têm histórico
+    lista_hist_moedas = list(
+        conjunto_moedas.intersection(moedas_com_historico))
 
     # Remove as moedas usadas apenas para calcular os valores das ações
-    hist_conversoes = hist_conversoes.loc[lista_moedas]
+    hist_conversoes = hist_conversoes.loc[lista_hist_moedas]
 
     historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
 
