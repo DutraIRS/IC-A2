@@ -127,12 +127,14 @@ def concatena_historico(dicionario):
     """
     data_frames = {}
 
-    for chave, valor in dicionario.items():
+    for ativo, valor in dicionario.items():
         # Encontra todos data frames para juntar depois
         if isinstance(valor, pd.DataFrame):
             # Renomeia o índice para ser consistente com outros data frames
             valor.index.name = "date"
-            data_frames[chave] = valor
+            data_frames[ativo] = valor
+        else:
+            print(f"-> Atenção! Ignorando histórico de \"{ativo}\" pois não foi encontrado")
 
     # Especifica que a chave do dicionário será um novo índice chamado "symbol"
     df = pd.concat(data_frames, names=["symbol"])
