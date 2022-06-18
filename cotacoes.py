@@ -173,6 +173,9 @@ def hist_acoes(acoes, dias):
 def hist_moedas_real(moedas, dias):
     """Obtém o histórico do valor das moedas em reais
 
+    Obtém o histórico do valor das moedas em reais. Ignora moedas cujos
+    históricos não forem encontrados.
+
     :param moedas: Lista dos códigos das moedas, ignorando "BRL" se presente
     :type moedas: list(str)
     :param dias: Número de dias de histórico
