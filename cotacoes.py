@@ -68,8 +68,17 @@ def moedas_em_real(moedas):
     :return: Dicionário ligando os códigos com os valores de conversão
     :rtype: dict(str, float)
     """
+    dicionario_valor_real = {}
+    conjunto_moedas = set(moedas)
+
+    # Checa se BRL está no conjunto pois ele não precisado ser buscado
+    if "BRL" in conjunto_moedas:
+        dicionario_valor_real["BRL"] = 1
+        conjunto_moedas.remove("BRL")
+
     textos_moedas = []
-    for moeda in moedas:
+    for moeda in conjunto_moedas:
+        # Checa se o texto já está no formato necessário para o ticker
         if moeda.endswith("=X"):
             texto_conversao = moeda
         else:
@@ -81,7 +90,6 @@ def moedas_em_real(moedas):
     tickers_moedas = yq.Ticker(texto_conversoes)
     dicionario_cotacoes = tickers_moedas.price
 
-    dicionario_valor_real = {}
     for texto_conversao, ticker in dicionario_cotacoes.items():
         moeda_em_real = ticker["regularMarketPrice"]
 
