@@ -14,10 +14,10 @@ def criar_qr(arquivo, planilha, total, celula):
     valor = sh[total].value
 # carrega o arquivo, olha para a planilha desejada e descobre o valor total da carteira
 
-    mensagem = str('Esta carteira de investimentos vale ' + str(valor) + ' ao todo.')
+    mensagem = str('Esta carteira de investimentos vale R$' + str(round(valor, 2)) + ' ao todo.')
     img = qrcode.make(mensagem)
-    img.save(str('aaa.png'))
-    img = Image("aaa.png")
+    img.save(str('qr.png'))
+    img = Image("qr.png")
 #cria e salva a imagem
 
     sh.add_image(img, celula)
