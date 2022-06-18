@@ -6,7 +6,7 @@ import busca_carteira as bc
 def obtem_cotacoes(acoes):
     """Obtém as cotações das ações dadas.
 
-    Recebe uma lista de códigos de ações, busca as cotações das ações utilizando a biblioteca yahooquery e retorna um dicionário ligando os códigos das ações com suas respectivas cotações.
+    Recebe uma lista de códigos de ações, busca as cotações das ações utilizando a biblioteca yahooquery e retorna um dicionário ligando os códigos das ações com suas respectivas cotações. Ignora ações cujas cotações não forem encontradas.
 
     :param acoes: Lista dos códigos das ações
     :type acoes: list(str)
@@ -35,8 +35,9 @@ def moedas_em_real(moedas):
     """Recebe uma lista de moedas e retorna os valores delas em reais.
 
     Recebe uma lista de códigos de moedas, busca os valores de conversão para
-    real (BRL) utilizando a biblioteca yahooquery e retorna um dicionário ligando
-    os códigos com seus respectivos valores de conversão para real.
+    real (BRL) utilizando a biblioteca yahooquery e retorna um dicionário
+    ligando os códigos com seus respectivos valores de conversão para real.
+    Ignora moedas cujas conversões não forem encontradas.
 
     :param moedas: Lista de códigos de moedas
     :type moedas: list(str)
@@ -114,7 +115,7 @@ def valor_carteira_reais(carteira):
     return total_reais
 
 
-def dict_para_df(dicionario):
+def concatena_historico(dicionario):
     """Obtém os dataframes dos valores do dicionário e os concatena juntos
 
     Obtém os dataframes dos valores do dicionário e os une usando a chave como
@@ -127,12 +128,15 @@ def dict_para_df(dicionario):
     """
     data_frames = {}
 
-    for chave, valor in dicionario.items():
+    for ativo, valor in dicionario.items():
         # Encontra todos data frames para juntar depois
         if isinstance(valor, pd.DataFrame):
             # Renomeia o índice para ser consistente com outros data frames
             valor.index.name = "date"
-            data_frames[chave] = valor
+            data_frames[ativo] = valor
+        else:
+            print(
+                f"-> Atenção! Ignorando histórico de \"{ativo}\" pois não foi encontrado")
 
     # Especifica que a chave do dicionário será um novo índice chamado "symbol"
     df = pd.concat(data_frames, names=["symbol"])
@@ -142,6 +146,9 @@ def dict_para_df(dicionario):
 
 def hist_acoes(acoes, dias):
     """Obtém o histórico das ações com o número de dias especificado
+
+    Obtém o histórico das ações com o número de dias especificado. Ignora ações
+    cujos históricos não forem encontrados.
 
     :param ativo: Lista de códigos das ações
     :type ativo: list(str)
@@ -158,13 +165,16 @@ def hist_acoes(acoes, dias):
 
     # Se algum ativo não tiver histórico, um dicionário é retornado
     if isinstance(df, dict):
-        df = dict_para_df(df)
+        df = concatena_historico(df)
 
     return df
 
 
 def hist_moedas_real(moedas, dias):
     """Obtém o histórico do valor das moedas em reais
+
+    Obtém o histórico do valor das moedas em reais. Ignora moedas cujos
+    históricos não forem encontrados.
 
     :param moedas: Lista dos códigos das moedas, ignorando "BRL" se presente
     :type moedas: list(str)
@@ -194,7 +204,7 @@ def hist_moedas_real(moedas, dias):
 
     # Se algum ativo não tiver histórico, um dicionário é retornado
     if isinstance(df, dict):
-        df = dict_para_df(df)
+        df = concatena_historico(df)
 
     # Remove entradas duplicadas
     df = df[~df.index.duplicated(keep="last")]
@@ -344,3 +354,53 @@ def hist_carteira_por_ativo(carteira, dias):
     historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
 
     return historicos
+
+
+def hist_carteira_total(carteira, dias):
+    """Calcula o histórico do valor total da carteira
+
+    Calcula o histórico do valor total da carteira. Se todos os ativos não possuírem histórico para os dias especificados, será retornado o histórico para o maior número de dias possíveis.
+
+    :param carteira: A carteira com os ativos
+    :type carteira: dict(str, dict(str, float))
+    :param dias: Número de dias de histórico
+    :type dias: int
+    :return: Dataframe contendo os dias de histórico e seus valores
+    :rtype: pandas.core.frame.DataFrame
+    """
+    historicos = hist_carteira_por_ativo(carteira, dias)
+    min_dias = dias
+
+    for hist in historicos.values():
+        ativos = hist.index.get_level_values("symbol").unique()
+
+        for ativo in ativos:
+            hist_ativo = hist.loc[[ativo]]
+
+            # Obtém a primeira dimensão do data frame, linhas
+            num_dias = hist_ativo.shape[0]
+
+            if num_dias < min_dias:
+                min_dias = num_dias
+
+    if min_dias < dias:
+        print(
+            f"-> Atenção! O histórico do valor total da carteira será do período de {min_dias} dias por limitações dos históricos dos ativos")
+
+    todos_hist = pd.concat(historicos.values())
+
+    # Remove os índices "symbol" pois apenas as datas importam
+    todos_hist.reset_index(level="symbol", drop=True, inplace=True)
+
+    # Remove a coluna "volume" pois é irrelevante para esse histórico
+    todos_hist.drop(columns="volume", inplace=True)
+
+    lista_dias = todos_hist.index.unique()
+    dias_com_tds_hists = lista_dias[-min_dias:]
+
+    hist_dias_completos = todos_hist.loc[dias_com_tds_hists]
+
+    # Calcula a soma das colunas agrupando pela data
+    hist_total_carteira = hist_dias_completos.groupby(level=0).sum()
+
+    return hist_total_carteira
