@@ -16,9 +16,18 @@ def obtem_cotacoes(acoes):
     texto_acoes = ' '.join(acoes)
     tickers_acoes = yq.Ticker(texto_acoes)
 
+    dicionario_acoes_cot = {}
     dicionario_cotacoes = tickers_acoes.price
 
-    return dicionario_cotacoes
+    for acao, infos in dicionario_cotacoes.items():
+        # Se a ação não for encontrada, uma string é retornada
+        if isinstance(infos, str):
+            print(f"-> Atenção! Ignorando cotação de \"{acao}\" pois não foi encontrada")
+            continue
+
+        dicionario_acoes_cot[acao] = infos
+
+    return dicionario_acoes_cot
 
 
 def moedas_em_real(moedas):
