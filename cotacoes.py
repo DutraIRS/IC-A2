@@ -2,25 +2,6 @@ import yahooquery as yq
 import busca_carteira as bc
 
 
-def moeda_em_real(moeda):
-    """Obtém o valor de uma moeda em reais.
-
-    Recebe o código de uma moeda, busca o seu valor em reais utilizando a
-    biblioteca yahooquery e retorna esse valor.
-
-    :param moeda: O código da moeda
-    :type moeda: str
-    :return: O valor da moeda em reais
-    :rtype: float
-    """
-    texto_conversao = f"{moeda}BRL=X"
-    ticker = yq.Ticker(texto_conversao)
-
-    dados_moeda = ticker.price[texto_conversao]
-    moeda_em_real = dados_moeda["regularMarketPrice"]
-    return moeda_em_real
-
-
 def obtem_cotacoes(acoes):
     """Obtém as cotações das ações dadas.
 
