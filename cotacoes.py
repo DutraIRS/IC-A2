@@ -186,8 +186,12 @@ def hist_moedas_real(moedas, dias):
 
     textos_conversao = []
     for moeda in conjunto_moedas:
-        texto_convesao = f"{moeda}BRL=X"
-        textos_conversao.append(texto_convesao)
+        if moeda.endswith("=X"):
+            texto_conversao = moeda
+        else:
+            texto_conversao = f"{moeda}BRL=X"
+        
+        textos_conversao.append(texto_conversao)
 
     texto_moedas = ' '.join(textos_conversao)
     ticker = yq.Ticker(texto_moedas)
