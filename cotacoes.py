@@ -252,11 +252,12 @@ def hist_carteira_reais(carteira, dias):
                             historico_acoes.columns != "volume"] *= linhas_moeda
 
     # Prepara as moedas da carteira, exceto BRL por não possuir histórico
-    conjunto_moedas = set(moedas.keys())
-    conjunto_moedas.discard("BRL")
+    lista_moedas = list(moedas.keys())
+    if "BRL" in lista_moedas:
+        lista_moedas.remove("BRL")
 
     # Remove as moedas usadas apenas para calcular os valores das ações
-    hist_conversoes = hist_conversoes.loc[conjunto_moedas]
+    hist_conversoes = hist_conversoes.loc[lista_moedas]
 
     historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
 
