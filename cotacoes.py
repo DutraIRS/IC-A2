@@ -346,3 +346,52 @@ def hist_carteira_por_ativo(carteira, dias):
     historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
 
     return historicos
+
+
+def hist_carteira_total(carteira, dias):
+    """Calcula o histórico do valor total da carteira
+
+    Calcula o histórico do valor total da carteira. Se todos os ativos não possuírem histórico para os dias especificados, será retornado o histórico para o maior número de dias possíveis.
+
+    :param carteira: A carteira com os ativos
+    :type carteira: dict(str, dict(str, float))
+    :param dias: Número de dias de histórico
+    :type dias: int
+    :return: Dataframe contendo os dias de histórico e seus valores
+    :rtype: pandas.core.frame.DataFrame
+    """    
+    historicos = hist_carteira_por_ativo(carteira, dias)
+    min_dias = dias
+
+    for hist in historicos.values():
+        ativos = hist.index.get_level_values("symbol").unique()
+
+        for ativo in ativos:
+            hist_ativo = hist.loc[[ativo]]
+
+            # Obtém a primeira dimensão do data frame, linhas
+            num_dias = hist_ativo.shape[0]
+
+            if num_dias < min_dias:
+                min_dias = num_dias
+    
+    if min_dias < dias:
+        print(f"-> Atenção! O histórico do valor total da carteira será do período de {min_dias} dias por limitações dos históricos dos ativos")
+    
+    todos_hist = pd.concat(historicos.values())
+
+    # Remove os índices "symbol" pois apenas as datas importam
+    todos_hist.reset_index(level="symbol", drop=True, inplace=True)
+
+    # Remove a coluna "volume" pois é irrelevante para esse histórico
+    todos_hist.drop(columns="volume", inplace=True)
+
+    lista_dias = todos_hist.index.unique()
+    dias_com_tds_hists = lista_dias[-min_dias:]
+
+    hist_dias_completos = todos_hist.loc[dias_com_tds_hists]
+
+    # Calcula a soma das colunas agrupando pela data
+    hist_total_carteira = hist_dias_completos.groupby(level=0).sum()
+
+    return hist_total_carteira
