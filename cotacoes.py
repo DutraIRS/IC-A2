@@ -195,6 +195,9 @@ def hist_moedas_real(moedas, dias):
     texto_periodo = f"{dias}d"
     df = ticker.history(texto_periodo)
 
+    # Remove entradas duplicadas
+    df = df[~df.index.duplicated(keep = "last")]
+
     return df
 
 
