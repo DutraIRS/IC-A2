@@ -2,23 +2,6 @@ import yahooquery as yq
 import busca_carteira as bc
 
 
-def obtem_cotacao(acao):
-    """Obtém a cotação da ação
-
-    Recebe o código da ação, busca a cotação utilizando a biblioteca yahooquery
-    e retorna um dicionário contendo as informações obtidas.
-
-    :param acao: Código da ação
-    :type acao: str
-    :return: A cotação da ação
-    :rtype: dict(str, Any)
-    """
-    ticker = yq.Ticker(acao)
-
-    cotacao = ticker.price
-    return cotacao
-
-
 def moeda_em_real(moeda):
     """Obtém o valor de uma moeda em reais.
 
