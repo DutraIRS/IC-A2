@@ -9,12 +9,13 @@ from openpyxl.styles import Font
 
 def criar_excel(url):
     
+    # Lê o dicionário advindo do módulo busca_carteira e transforma em lista
     carteira = busca_carteira.buscar_carteira(url)
     ativos = list(carteira.items())
     moedas = ativos[0]
     acoes = ativos[1]
-    # Lê o dicionário advindo do módulo busca_carteira e transforma em lista
 
+    #tranforma o dicionário moedas em lista
     moedas_nomes_quantidades = moedas[1]
     moedas_nomes = []
     moedas_quantidades = []
@@ -23,7 +24,8 @@ def criar_excel(url):
         moedas_nomes.append(key) 
     for val in moedas_nomes_quantidades.values():
         moedas_quantidades.append(val)
-
+    
+    #transforma o dicionário acoes em lista
     acoes_nomes_quantidades = acoes[1]
     acoes_nomes = []
     acoes_quantidades = []
@@ -33,16 +35,15 @@ def criar_excel(url):
     for val in acoes_nomes_quantidades.values():
         acoes_quantidades.append(val)
 
+    #obtém as cotações
     info_cotacoes = cotacoes.obtem_cotacoes(acoes_nomes)
     valor_acoes = []
     moeda_acao = []
     for val in info_cotacoes.values():
         valor_acoes.append(val['regularMarketPrice'])
         moeda_acao.append(val['currency'])
-    
-    
+        
     #valor individual ativo em Real
-                               
     valor_uni = cotacoes.unidade_ativos_real(carteira)
     valor_uni_ativos = list(valor_uni.items())
     valor_uni_moedas = valor_uni_ativos[1]
@@ -61,8 +62,7 @@ def criar_excel(url):
     for val in valor_uni_acoes_nomes_quantidades.values():
         valor_acoes_BRL.append(val)
     
-    #valor Total ativo em Real
-                               
+    #valor Total ativo em Real                          
     valor_total = cotacoes.valor_ativos_reais(carteira)
     valor_total_ativos = list(valor_total.items())
     valor_total_moedas = valor_total_ativos[1]
@@ -99,6 +99,7 @@ def criar_excel(url):
     da.to_excel(writer, sheet_name='Carteira', index=False, startcol=6)
     writer.save()
 
+    #Insere o valor total da carteira e formata as colunas
     wb = openpyxl.load_workbook("Carteira.xlsx")
     ws = wb.active
     Carteira_page = wb["Carteira"]
@@ -117,7 +118,8 @@ def criar_excel(url):
     Carteira_page.column_dimensions['L'].width = 20
     Carteira_page.column_dimensions['N'].width = 22
     
+    #salva o excel
     wb.save("Carteira.xlsx")
 
-    #cria qr code
+    #Chama a função para criar o qr code
     cria_qr_code.criar_qr("Carteira.xlsx","Carteira", 'N2','N5')
