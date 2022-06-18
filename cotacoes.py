@@ -147,6 +147,9 @@ def concatena_historico(dicionario):
 def hist_acoes(acoes, dias):
     """Obtém o histórico das ações com o número de dias especificado
 
+    Obtém o histórico das ações com o número de dias especificado. Ignora ações
+    cujos históricos não forem encontrados.
+
     :param ativo: Lista de códigos das ações
     :type ativo: list(str)
     :param dias: Número de dias de histórico
