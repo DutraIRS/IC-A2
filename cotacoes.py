@@ -35,8 +35,9 @@ def moedas_em_real(moedas):
     """Recebe uma lista de moedas e retorna os valores delas em reais.
 
     Recebe uma lista de códigos de moedas, busca os valores de conversão para
-    real (BRL) utilizando a biblioteca yahooquery e retorna um dicionário ligando
-    os códigos com seus respectivos valores de conversão para real.
+    real (BRL) utilizando a biblioteca yahooquery e retorna um dicionário
+    ligando os códigos com seus respectivos valores de conversão para real.
+    Ignora moedas cujas conversões não forem encontradas.
 
     :param moedas: Lista de códigos de moedas
     :type moedas: list(str)
