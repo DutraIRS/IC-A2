@@ -134,7 +134,8 @@ def concatena_historico(dicionario):
             valor.index.name = "date"
             data_frames[ativo] = valor
         else:
-            print(f"-> Atenção! Ignorando histórico de \"{ativo}\" pois não foi encontrado")
+            print(
+                f"-> Atenção! Ignorando histórico de \"{ativo}\" pois não foi encontrado")
 
     # Especifica que a chave do dicionário será um novo índice chamado "symbol"
     df = pd.concat(data_frames, names=["symbol"])
@@ -359,7 +360,7 @@ def hist_carteira_total(carteira, dias):
     :type dias: int
     :return: Dataframe contendo os dias de histórico e seus valores
     :rtype: pandas.core.frame.DataFrame
-    """    
+    """
     historicos = hist_carteira_por_ativo(carteira, dias)
     min_dias = dias
 
@@ -374,10 +375,11 @@ def hist_carteira_total(carteira, dias):
 
             if num_dias < min_dias:
                 min_dias = num_dias
-    
+
     if min_dias < dias:
-        print(f"-> Atenção! O histórico do valor total da carteira será do período de {min_dias} dias por limitações dos históricos dos ativos")
-    
+        print(
+            f"-> Atenção! O histórico do valor total da carteira será do período de {min_dias} dias por limitações dos históricos dos ativos")
+
     todos_hist = pd.concat(historicos.values())
 
     # Remove os índices "symbol" pois apenas as datas importam
