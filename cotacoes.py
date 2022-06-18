@@ -6,7 +6,7 @@ import busca_carteira as bc
 def obtem_cotacoes(acoes):
     """Obtém as cotações das ações dadas.
 
-    Recebe uma lista de códigos de ações, busca as cotações das ações utilizando a biblioteca yahooquery e retorna um dicionário ligando os códigos das ações com suas respectivas cotações.
+    Recebe uma lista de códigos de ações, busca as cotações das ações utilizando a biblioteca yahooquery e retorna um dicionário ligando os códigos das ações com suas respectivas cotações. Ignora ações cujas cotações não forem encontradas.
 
     :param acoes: Lista dos códigos das ações
     :type acoes: list(str)
