@@ -1,41 +1,6 @@
+import pandas as pd
 import yahooquery as yq
 import busca_carteira as bc
-
-
-def obtem_cotacao(acao):
-    """Obtém a cotação da ação
-
-    Recebe o código da ação, busca a cotação utilizando a biblioteca yahooquery
-    e retorna um dicionário contendo as informações obtidas.
-
-    :param acao: Código da ação
-    :type acao: str
-    :return: A cotação da ação
-    :rtype: dict(str, Any)
-    """
-    ticker = yq.Ticker(acao)
-
-    cotacao = ticker.price
-    return cotacao
-
-
-def moeda_em_real(moeda):
-    """Obtém o valor de uma moeda em reais.
-
-    Recebe o código de uma moeda, busca o seu valor em reais utilizando a
-    biblioteca yahooquery e retorna esse valor.
-
-    :param moeda: O código da moeda
-    :type moeda: str
-    :return: O valor da moeda em reais
-    :rtype: float
-    """
-    texto_conversao = f"{moeda}BRL=X"
-    ticker = yq.Ticker(texto_conversao)
-
-    dados_moeda = ticker.price[texto_conversao]
-    moeda_em_real = dados_moeda["regularMarketPrice"]
-    return moeda_em_real
 
 
 def obtem_cotacoes(acoes):
@@ -51,9 +16,19 @@ def obtem_cotacoes(acoes):
     texto_acoes = ' '.join(acoes)
     tickers_acoes = yq.Ticker(texto_acoes)
 
+    dicionario_acoes_cot = {}
     dicionario_cotacoes = tickers_acoes.price
 
-    return dicionario_cotacoes
+    for acao, infos in dicionario_cotacoes.items():
+        # Se a ação não for encontrada, uma string é retornada
+        if isinstance(infos, str):
+            print(
+                f"-> Atenção! Ignorando cotação de \"{acao}\" pois não foi encontrada")
+            continue
+
+        dicionario_acoes_cot[acao] = infos
+
+    return dicionario_acoes_cot
 
 
 def moedas_em_real(moedas):
@@ -83,7 +58,7 @@ def moedas_em_real(moedas):
             texto_conversao = moeda
         else:
             texto_conversao = f"{moeda}BRL=X"
-        
+
         textos_moedas.append(texto_conversao)
 
     texto_conversoes = ' '.join(textos_moedas)
@@ -91,34 +66,22 @@ def moedas_em_real(moedas):
     dicionario_cotacoes = tickers_moedas.price
 
     for texto_conversao, ticker in dicionario_cotacoes.items():
-        moeda_em_real = ticker["regularMarketPrice"]
-
         if texto_conversao.endswith("BRL=X"):
             moeda = texto_conversao[:-5]
         else:
             moeda = texto_conversao
-        
+
+        # Se a moeda não for encontrada, uma string é retornada
+        if isinstance(ticker, str):
+            print(
+                f"-> Atenção! Ignorando cotação de \"{moeda}\" pois não foi encontrada")
+            continue
+
+        moeda_em_real = ticker["regularMarketPrice"]
+
         dicionario_valor_real[moeda] = moeda_em_real
 
     return dicionario_valor_real
-
-
-def multiplica_cotacao(cotacao, razao):
-    """Multiplica uma cotação por um valor.
-
-    Multiplica os valores "Open", "High", "Low" e "Close" de uma cotação pela
-    razão dada. Multiplicar a cotação diretamente resulta no volume vendido
-    ("Volume") também sendo multiplicado, o que pode ser indesejado.
-
-    :param cotacao: Cotação obtida de Ticker.history()
-    :type cotacao: pandas.core.frame.DataFrame
-    :param razao: Razão pela qual a cotação será multiplicada
-    :type razao: float
-    """
-    cotacao["Open"] *= razao
-    cotacao["High"] *= razao
-    cotacao["Low"] *= razao
-    cotacao["Close"] *= razao
 
 
 def valor_carteira_reais(carteira):
@@ -151,6 +114,32 @@ def valor_carteira_reais(carteira):
     return total_reais
 
 
+def dict_para_df(dicionario):
+    """Obtém os dataframes dos valores do dicionário e os concatena juntos
+
+    Obtém os dataframes dos valores do dicionário e os une usando a chave como
+    índice de nome "symbol" no dataframe resultante
+
+    :param dicionario: Dicionário 
+    :type dicionario: dict(str, any)
+    :return: Dataframe resultante da concatenação
+    :rtype: pandas.core.frame.DataFrame
+    """
+    data_frames = {}
+
+    for chave, valor in dicionario.items():
+        # Encontra todos data frames para juntar depois
+        if isinstance(valor, pd.DataFrame):
+            # Renomeia o índice para ser consistente com outros data frames
+            valor.index.name = "date"
+            data_frames[chave] = valor
+
+    # Especifica que a chave do dicionário será um novo índice chamado "symbol"
+    df = pd.concat(data_frames, names=["symbol"])
+
+    return df
+
+
 def hist_acoes(acoes, dias):
     """Obtém o histórico das ações com o número de dias especificado
 
@@ -166,6 +155,10 @@ def hist_acoes(acoes, dias):
 
     texto_periodo = f"{dias}d"
     df = ticker.history(texto_periodo)
+
+    # Se algum ativo não tiver histórico, um dicionário é retornado
+    if isinstance(df, dict):
+        df = dict_para_df(df)
 
     return df
 
@@ -186,8 +179,12 @@ def hist_moedas_real(moedas, dias):
 
     textos_conversao = []
     for moeda in conjunto_moedas:
-        texto_convesao = f"{moeda}BRL=X"
-        textos_conversao.append(texto_convesao)
+        if moeda.endswith("=X"):
+            texto_conversao = moeda
+        else:
+            texto_conversao = f"{moeda}BRL=X"
+
+        textos_conversao.append(texto_conversao)
 
     texto_moedas = ' '.join(textos_conversao)
     ticker = yq.Ticker(texto_moedas)
@@ -195,73 +192,14 @@ def hist_moedas_real(moedas, dias):
     texto_periodo = f"{dias}d"
     df = ticker.history(texto_periodo)
 
+    # Se algum ativo não tiver histórico, um dicionário é retornado
+    if isinstance(df, dict):
+        df = dict_para_df(df)
+
     # Remove entradas duplicadas
-    df = df[~df.index.duplicated(keep = "last")]
+    df = df[~df.index.duplicated(keep="last")]
 
     return df
-
-
-def hist_carteira_reais(carteira, dias):
-    """Obtém os históricos em reais de todos ativos da carteira
-
-    :param carteira: A carteira com os ativos
-    :type carteira: dict(str, dict(str, float))
-    :param dias: Número de dias de histórico
-    :type dias: int
-    :return: Dicionário de duas entradas com os históricos
-    :rtype: dict(str, pandas.core.frame.DataFrame)
-    """
-    moedas = carteira["moedas"]
-    acoes = carteira["acoes"]
-
-    cotacoes = obtem_cotacoes(acoes.keys())
-
-    moedas_para_conversao = set(moedas.keys())
-    for cotacao in cotacoes.values():
-        moeda_da_cotacao = cotacao["currency"]
-        moedas_para_conversao.add(moeda_da_cotacao)
-
-    hist_conversoes = hist_moedas_real(moedas_para_conversao, dias)
-    historico_acoes = hist_acoes(acoes.keys(), dias)
-
-    # Obtém os nomes dos índices de conversão. (ex: USDBRL=X)
-    nomes_conversoes = hist_conversoes.index.get_level_values("symbol")
-
-    dict_novos_nomes = {}
-    for nome_antigo in nomes_conversoes:
-        novo_nome = nome_antigo[:-5]
-        dict_novos_nomes[nome_antigo] = novo_nome
-
-    # Remove o texto "BRL=X" dos índices
-    hist_conversoes = hist_conversoes.rename(index=dict_novos_nomes)
-
-    for acao in acoes:
-        moeda_acao = cotacoes[acao]["currency"]
-
-        if moeda_acao == "BRL":
-            continue
-
-        linhas_moeda_indexadas = hist_conversoes.loc[[moeda_acao]]
-
-        # Remove os índices para permitir a multiplicação de data frames
-        linhas_moeda = linhas_moeda_indexadas.reset_index(
-            level="symbol", drop=True)
-
-        # Multiplica os valores entrada por entrada, exceto o volume
-        historico_acoes.loc[[acao],
-                            historico_acoes.columns != "volume"] *= linhas_moeda
-
-    # Prepara as moedas da carteira, exceto BRL por não possuir histórico
-    lista_moedas = list(moedas.keys())
-    if "BRL" in lista_moedas:
-        lista_moedas.remove("BRL")
-
-    # Remove as moedas usadas apenas para calcular os valores das ações
-    hist_conversoes = hist_conversoes.loc[lista_moedas]
-
-    historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
-
-    return historicos
 
 
 def unidade_ativos_real(carteira):
@@ -288,8 +226,10 @@ def unidade_ativos_real(carteira):
     valor_un_moedas = {}
 
     for moeda in moedas:
-        # Não inclui moedas apenas usadas para converter ações
-        valor_un_moedas[moeda] = moedas_para_real[moeda]
+        # Testa para checar se foi encontrada uma conversão da moeda
+        if moeda in moedas_para_real:
+            # Não inclui moedas apenas usadas para converter ações
+            valor_un_moedas[moeda] = moedas_para_real[moeda]
 
     for acao, cotacao in cotacoes.items():
         moeda_acao = cotacao["currency"]
@@ -332,3 +272,75 @@ def valor_ativos_reais(carteira):
     ativos_em_real = {"acoes": total_por_acao, "moedas": total_por_moeda}
 
     return ativos_em_real
+
+
+def hist_carteira_por_ativo(carteira, dias):
+    """Obtém os históricos em reais de todos ativos da carteira
+
+    :param carteira: A carteira com os ativos
+    :type carteira: dict(str, dict(str, float))
+    :param dias: Número de dias de histórico
+    :type dias: int
+    :return: Dicionário de duas entradas com os históricos
+    :rtype: dict(str, pandas.core.frame.DataFrame)
+    """
+    moedas = carteira["moedas"]
+    acoes = carteira["acoes"]
+
+    cotacoes = obtem_cotacoes(acoes.keys())
+
+    moedas_para_conversao = set(moedas.keys())
+    for cotacao in cotacoes.values():
+        moeda_da_cotacao = cotacao["currency"]
+        moedas_para_conversao.add(moeda_da_cotacao)
+
+    hist_conversoes = hist_moedas_real(moedas_para_conversao, dias)
+    historico_acoes = hist_acoes(acoes.keys(), dias)
+
+    # Obtém os nomes dos índices de conversão. (ex: USDBRL=X)
+    nomes_conversoes = hist_conversoes.index.get_level_values("symbol")
+
+    dict_novos_nomes = {}
+    for nome_antigo in nomes_conversoes:
+        if not nome_antigo.endswith("BRL=X"):
+            continue
+
+        novo_nome = nome_antigo[:-5]
+        dict_novos_nomes[nome_antigo] = novo_nome
+
+    # Remove o texto "BRL=X" dos índices
+    hist_conversoes = hist_conversoes.rename(index=dict_novos_nomes)
+
+    conjunto_acoes = set(acoes.keys())
+    acoes_com_hist = historico_acoes.index.get_level_values("symbol")
+    acoes_carteira_com_hist = conjunto_acoes.intersection(acoes_com_hist)
+
+    for acao in acoes_carteira_com_hist:
+        moeda_acao = cotacoes[acao]["currency"]
+
+        if moeda_acao == "BRL":
+            continue
+
+        linhas_moeda_indexadas = hist_conversoes.loc[[moeda_acao]]
+
+        # Remove os índices para permitir a multiplicação de data frames
+        linhas_moeda = linhas_moeda_indexadas.reset_index(
+            level="symbol", drop=True)
+
+        # Multiplica os valores entrada por entrada, exceto o volume
+        historico_acoes.loc[[acao],
+                            historico_acoes.columns != "volume"] *= linhas_moeda
+
+    conjunto_moedas = set(moedas.keys())
+    moedas_com_historico = dict_novos_nomes.values()
+
+    # Lista de moedas na carteira que têm histórico
+    lista_hist_moedas = list(
+        conjunto_moedas.intersection(moedas_com_historico))
+
+    # Remove as moedas usadas apenas para calcular os valores das ações
+    hist_conversoes = hist_conversoes.loc[lista_hist_moedas]
+
+    historicos = {"acoes": historico_acoes, "moedas": hist_conversoes}
+
+    return historicos
