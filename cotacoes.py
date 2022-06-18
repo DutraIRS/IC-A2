@@ -56,16 +56,17 @@ def moedas_em_real(moedas):
     dicionario_cotacoes = tickers_moedas.price
 
     for texto_conversao, ticker in dicionario_cotacoes.items():
-        # Se a moeda não for encontrada, uma string é retornada
-        if isinstance(ticker, str):
-            continue
-
-        moeda_em_real = ticker["regularMarketPrice"]
-
         if texto_conversao.endswith("BRL=X"):
             moeda = texto_conversao[:-5]
         else:
             moeda = texto_conversao
+        
+        # Se a moeda não for encontrada, uma string é retornada
+        if isinstance(ticker, str):
+            print(f"-> Atenção! Ignorando cotação de \"{moeda}\" pois não foi encontrada")
+            continue
+
+        moeda_em_real = ticker["regularMarketPrice"]
 
         dicionario_valor_real[moeda] = moeda_em_real
 
@@ -308,8 +309,6 @@ def unidade_ativos_real(carteira):
         if moeda in moedas_para_real:
             # Não inclui moedas apenas usadas para converter ações
             valor_un_moedas[moeda] = moedas_para_real[moeda]
-        else:
-            print(f"-> Atenção! Ignorando cotação de \"{moeda}\" pois não foi encontrada")
 
     for acao, cotacao in cotacoes.items():
         moeda_acao = cotacao["currency"]
