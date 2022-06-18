@@ -202,7 +202,7 @@ def hist_moedas_real(moedas, dias):
     return df
 
 
-def hist_carteira_reais(carteira, dias):
+def hist_carteira_por_ativo(carteira, dias):
     """Obtém os históricos em reais de todos ativos da carteira
 
     :param carteira: A carteira com os ativos
