@@ -234,6 +234,10 @@ def hist_carteira_reais(carteira, dias):
 
     for acao in acoes:
         moeda_acao = cotacoes[acao]["currency"]
+
+        if moeda_acao == "BRL":
+            continue
+
         linhas_moeda_indexadas = hist_conversoes.loc[[moeda_acao]]
 
         # Remove os índices para permitir a multiplicação de data frames
