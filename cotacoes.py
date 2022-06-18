@@ -266,10 +266,7 @@ def unidade_ativos_real(carteira):
         moeda_da_cotacao = cotacao["currency"]
         moedas_para_conversao.add(moeda_da_cotacao)
 
-    # Descarta BRL do set pois ele é a moeda para qual se está convertendo
-    moedas_para_conversao.discard("BRL")
     moedas_para_real = moedas_em_real(moedas_para_conversao)
-    moedas_para_real["BRL"] = 1
 
     valor_un_acoes = {}
     valor_un_moedas = {}
