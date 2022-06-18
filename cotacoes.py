@@ -233,6 +233,9 @@ def hist_carteira_reais(carteira, dias):
 
     dict_novos_nomes = {}
     for nome_antigo in nomes_conversoes:
+        if not nome_antigo.endswith("BRL=X"):
+            continue
+
         novo_nome = nome_antigo[:-5]
         dict_novos_nomes[nome_antigo] = novo_nome
 
