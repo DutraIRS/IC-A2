@@ -22,7 +22,8 @@ def obtem_cotacoes(acoes):
     for acao, infos in dicionario_cotacoes.items():
         # Se a ação não for encontrada, uma string é retornada
         if isinstance(infos, str):
-            print(f"-> Atenção! Ignorando cotação de \"{acao}\" pois não foi encontrada")
+            print(
+                f"-> Atenção! Ignorando cotação de \"{acao}\" pois não foi encontrada")
             continue
 
         dicionario_acoes_cot[acao] = infos
@@ -69,10 +70,11 @@ def moedas_em_real(moedas):
             moeda = texto_conversao[:-5]
         else:
             moeda = texto_conversao
-        
+
         # Se a moeda não for encontrada, uma string é retornada
         if isinstance(ticker, str):
-            print(f"-> Atenção! Ignorando cotação de \"{moeda}\" pois não foi encontrada")
+            print(
+                f"-> Atenção! Ignorando cotação de \"{moeda}\" pois não foi encontrada")
             continue
 
         moeda_em_real = ticker["regularMarketPrice"]
