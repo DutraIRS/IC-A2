@@ -173,15 +173,19 @@ def hist_acoes(acoes, dias):
 def hist_moedas_real(moedas, dias):
     """Obtém o histórico do valor das moedas em reais
 
-    :param moedas: Lista dos códigos das moedas
+    :param moedas: Lista dos códigos das moedas, ignorando "BRL" se presente
     :type moedas: list(str)
     :param dias: Número de dias de histórico
     :type dias: int
     :return: Data frame contendo os históricos
     :rtype: pandas.core.frame.DataFrame
     """
+    # Descarta BRL pois ele não posssui histórico de conversão para si mesmo
+    conjunto_moedas = set(moedas)
+    conjunto_moedas.discard("BRL")
+
     textos_conversao = []
-    for moeda in moedas:
+    for moeda in conjunto_moedas:
         texto_convesao = f"{moeda}BRL=X"
         textos_conversao.append(texto_convesao)
 
