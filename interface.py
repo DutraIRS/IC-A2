@@ -1,6 +1,10 @@
+import cria_excel as ce
+import graficos as gr
+
+
 def mostrar_menu():
-    titulo = 'O' + ' Selecione uma opção '.center(38, '-') + 'O'
-    opcoes = ['Ler carteira', 'Sair']
+    titulo = '\nO' + ' Selecione uma opção '.center(38, '-') + 'O'
+    opcoes = ['Avaliar carteira', 'Sair']
     parte_inferior = 'O' + '-' * 38 + 'O'
 
     print(titulo)
@@ -12,6 +16,15 @@ def mostrar_menu():
     
     print(parte_inferior)
 
+def avalia_carteira(url):
+    ce.criar_excel(url)
+
+    dias = 200
+
+    gr.gerar_grafico_moedas(url, dias)
+    gr.gerar_grafico_acoes(url, dias)
+    gr.gerar_grafico_carteira(url, dias)
+
 def iniciar_interface():
     resposta = -1
 
@@ -22,7 +35,8 @@ def iniciar_interface():
 
         match resposta:
             case '1':
-                print("TODO: inserir função certa")
+                url = input('Digite a URL do site com a carteira: ')
+                avalia_carteira(url)
             case '2':
                 print('Encerrando programa...')
 
