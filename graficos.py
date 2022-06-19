@@ -45,6 +45,14 @@ def gerar_grafico_acoes(carteira, num):
         histacoes5 = histacoes.loc[(histacoes["symbol"] == f'{lista_acoes[4]}'), ["date", "close"]]
     else:
         histacoes5 = []
+    if len(lista_acoes) >= 6:
+        histacoes6 = histacoes.loc[(histacoes["symbol"] == f'{lista_acoes[5]}'), ["date", "close"]]
+    else:
+        histacoes6 = []
+    if len(lista_acoes) >= 7:
+        histacoes7 = histacoes.loc[(histacoes["symbol"] == f'{lista_acoes[6]}'), ["date", "close"]]
+    else:
+        histacoes7 = []
 
     #gerando o plot
     plt.plot(histacoes1.date, histacoes1.close, label = f'{lista_acoes[0]}')
@@ -56,6 +64,14 @@ def gerar_grafico_acoes(carteira, num):
         print('')
     if len(lista_acoes) >= 5:
         plt.plot(histacoes5.date, histacoes5.close, label = f'{lista_acoes[4]}')
+    else:
+        print('')
+    if len(lista_acoes) >= 6:
+        plt.plot(histacoes6.date, histacoes6.close, label = f'{lista_acoes[5]}')
+    else:
+        print('')
+    if len(lista_acoes) >= 7:
+        plt.plot(histacoes7.date, histacoes7.close, label = f'{lista_acoes[6]}')
     else:
         print('')
     plt.legend()
@@ -121,6 +137,23 @@ def gerar_grafico_moedas(carteira, num):
         print('')
     plt.legend()
     plt.title(f'Variação do preço das moedas ao longo de {num} dias')
+
+    plot = plt.show()
+
+    return plot
+
+def gerar_grafico_carteira(carteira, num):
+    #Usando o busca_carteira para obter as ações e moedas
+    portifolio = busca_carteira.buscar_carteira(carteira)
+
+    #Gerando dataset
+    histcarteira = ctc.hist_carteira_total(portifolio, num)
+    histcarteira.reset_index(level = "date", inplace = True)
+
+    #Gerando o plot
+    plt.plot(histcarteira.date, histcarteira.open, label = "Valor total da carteira em Reais")
+    plt.legend()
+    plt.title(f'Variação do valor total da carteira ao longo de {num} dias')
 
     plot = plt.show()
 
