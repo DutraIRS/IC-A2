@@ -38,11 +38,11 @@ def iniciar_interface():
                 dias = -1
                 
                 # Loop até ser dado um valor positivo
-                while dias < 1:
+                while dias < 1 or dias > 3650:
                     dias = int(input('Quantos dias deverão ser avaliados: '))
 
                     if dias < 1:
-                        print("Digite um valor positivo.")
+                        print("Digite um valor entre 1 e 3650.")
                 
                 avalia_carteira(url, dias)
 
