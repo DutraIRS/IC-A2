@@ -25,3 +25,6 @@ def iniciar_interface():
                 print("TODO: inserir função certa")
             case '2':
                 print('Encerrando programa...')
+
+if __name__ == '__main__':
+    iniciar_interface()
