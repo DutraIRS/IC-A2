@@ -1,8 +1,6 @@
 import busca_carteira
 import cotacoes as ctc
-import pandas as pd
 import matplotlib.pyplot as plt
-import mplfinance as mpf
 
 def gerar_grafico_acoes(carteira, num):
     """Gera o gráfico das ações da carteira
@@ -28,7 +26,6 @@ def gerar_grafico_acoes(carteira, num):
     lista_acoes = list(portifolio_acoes.keys())
 
     #Gerando os datasets do histórico das ações e moedas
-    histmoedas = ctc.hist_moedas_real(lista_moedas, num)
     histacoes = ctc.hist_acoes(lista_acoes, num)
     histacoes.reset_index(level = "date", inplace = True)
     histacoes.reset_index(level = "symbol", inplace = True)
@@ -99,14 +96,11 @@ def gerar_grafico_moedas(carteira, num):
     """Passando para listas separadas para poderem ser usadas
     nos comandos hist_moedas_real e hist_acoes"""
     portifolio_moedas = (portifolio_list[0])
-    portifolio_acoes = (portifolio_list[1])
 
     lista_moedas = list(portifolio_moedas.keys())
-    lista_acoes = list(portifolio_acoes.keys())
     print(lista_moedas)
     #Gerando os datasets do histórico das ações e moedas
     histmoedas = ctc.hist_moedas_real(lista_moedas, num)
-    histacoes = ctc.hist_acoes(lista_moedas, num)
     histmoedas.reset_index(level = "date", inplace = True)
     histmoedas.reset_index(level = "symbol", inplace = True)
 
