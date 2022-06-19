@@ -376,9 +376,11 @@ def hist_carteira_total(carteira, dias):
 
     historicos = hist_carteira_por_ativo(carteira, dias)
     min_dias = dias
+    num_ativos = 0
 
     for hist in historicos.values():
         ativos = hist.index.get_level_values("symbol").unique()
+        num_ativos += len(ativos)
 
         for ativo in ativos:
             quantidade = dict_ativos[ativo]
@@ -405,7 +407,13 @@ def hist_carteira_total(carteira, dias):
     todos_hist.drop(columns="volume", inplace=True)
 
     lista_dias = todos_hist.index.unique()
-    dias_com_tds_hists = lista_dias[-min_dias:]
+    dias_limitados = lista_dias[-min_dias:]
+
+    dias_com_tds_hists = []
+    for dia in dias_limitados:
+        # Encontra todos os dias com nenhum histórico faltando
+        if todos_hist.loc[[dia]].shape[0] == num_ativos:
+            dias_com_tds_hists.append(dia)
 
     hist_dias_completos = todos_hist.loc[dias_com_tds_hists]
 
