@@ -1,0 +1,8 @@
+XlsxWriter == 3.0.3
+beautifulsoup4 == 4.11.1
+matplotlib == 3.5.2
+openpyxl == 3.0.10
+pandas == 1.4.2
+qrcode == 7.3.1
+requests == 2.27.1
+yahooquery == 2.2.15
