@@ -37,6 +37,12 @@ def iniciar_interface():
             case '1':
                 url = input('Digite a URL do site com a carteira: ')
                 avalia_carteira(url)
+
+                print('-> Dados da carteira salvos em Carteira.xlsx\n' +
+                '-> Gráficos salvos:\n' +
+                '\tvariacao_acoes.png\n' +
+                '\tvariacao_carteira.png\n' +
+                '\tvariacao_moedas.png')
             case '2':
                 print('Encerrando programa...')
 
