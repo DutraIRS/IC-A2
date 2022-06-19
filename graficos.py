@@ -76,7 +76,7 @@ def gerar_grafico_acoes(carteira, num):
         print('')
     plt.legend()
     plt.title(f'Variação do preço das ações ao longo de {num} dias')
-
+    plt.savefig('variacao_acoes.png')
     plot = plt.show()
 
     return plot
@@ -137,9 +137,9 @@ def gerar_grafico_moedas(carteira, num):
         print('')
     plt.legend()
     plt.title(f'Variação do preço das moedas ao longo de {num} dias')
-
+    plt.savefig('variacao_moedas.png')
     plot = plt.show()
-
+    
     return plot
 
 def gerar_grafico_carteira(carteira, num):
@@ -154,7 +154,7 @@ def gerar_grafico_carteira(carteira, num):
     plt.plot(histcarteira.date, histcarteira.open, label = "Valor total da carteira em Reais")
     plt.legend()
     plt.title(f'Variação do valor total da carteira ao longo de {num} dias')
-
+    plt.savefig('variacao_carteira.png')
     plot = plt.show()
 
     return plot
