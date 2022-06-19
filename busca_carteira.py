@@ -2,6 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 
 
+carteiras_salvas = {}
+
+
 def buscar_site(url):
     """Retorna o site da url parseado usando BS4 e lxml
 
@@ -76,10 +79,12 @@ def ler_ativos(conteudo):
             if moeda_lida == "BRL=X":
                 # O código "BRL=X" retorna por padrão o valor do dólar em reais
                 codigo_moeda = "USD"
-                print("-> Atenção! \"BRL=X\" convertido para \"USD\" pelo padrão do YahooFinance")
+                print(
+                    "-> Atenção! \"BRL=X\" convertido para \"USD\" pelo padrão do YahooFinance")
             else:
                 codigo_moeda = moeda_lida[0:3]
-                print(f"-> Atenção! \"{moeda_lida}\" convertido para \"{codigo_moeda}\"")
+                print(
+                    f"-> Atenção! \"{moeda_lida}\" convertido para \"{codigo_moeda}\"")
 
         else:
             codigo_moeda = moeda_lida
@@ -106,6 +111,14 @@ def buscar_carteira(url):
     :return: Um dicionário com os ativos
     :rtype: dict(str, dict(str, float))
     """
+    # Verifica se a carteira já foi buscada
+    if url in carteiras_salvas:
+        return carteiras_salvas[url]
+
     site = buscar_site(url)
     carteira = ler_ativos(site)
+
+    # Salva carteira para possível uso futuro
+    carteiras_salvas[url] = carteira
+
     return carteira
