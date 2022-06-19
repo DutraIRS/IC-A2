@@ -368,6 +368,12 @@ def hist_carteira_total(carteira, dias):
     :return: Dataframe contendo os dias de histórico e seus valores
     :rtype: pandas.core.frame.DataFrame
     """
+    acoes = carteira["acoes"]
+    moedas = carteira["moedas"]
+
+    # Junta os dicionários em um só
+    dict_ativos = acoes | moedas
+
     historicos = hist_carteira_por_ativo(carteira, dias)
     min_dias = dias
 
@@ -375,10 +381,13 @@ def hist_carteira_total(carteira, dias):
         ativos = hist.index.get_level_values("symbol").unique()
 
         for ativo in ativos:
-            hist_ativo = hist.loc[[ativo]]
+            quantidade = dict_ativos[ativo]
+
+            # Multiplica pela quantidade para obter o total do ativo
+            hist.loc[[ativo]] = hist.loc[[ativo]].mul(quantidade)
 
             # Obtém a primeira dimensão do data frame, linhas
-            num_dias = hist_ativo.shape[0]
+            num_dias = hist.loc[[ativo]].shape[0]
 
             if num_dias < min_dias:
                 min_dias = num_dias
