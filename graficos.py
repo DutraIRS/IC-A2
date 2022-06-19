@@ -20,10 +20,8 @@ def gerar_grafico_acoes(carteira, num):
     # Retirando as moedas e ações dos dicionários
     """Passando para listas separadas para poderem ser usadas
     nos comandos hist_moedas_real e hist_acoes"""
-    portifolio_moedas = (portifolio_list[0])
     portifolio_acoes = (portifolio_list[1])
 
-    lista_moedas = list(portifolio_moedas.keys())
     lista_acoes = list(portifolio_acoes.keys())
 
     # Gerando os datasets do histórico das ações e moedas
@@ -113,8 +111,13 @@ def gerar_grafico_moedas(carteira, num):
         histmoedas["symbol"] == f'{lista_moedas[0]}BRL=X'), ["date", "close"]]
     histmoedas2 = histmoedas.loc[(
         histmoedas["symbol"] == f'{lista_moedas[1]}BRL=X'), ["date", "close"]]
-    histmoedas3 = histmoedas.loc[(
-        histmoedas["symbol"] == f'{lista_moedas[2]}BRL=X'), ["date", "close"]]
+    
+    if len(lista_moedas) >= 3:
+        histmoedas3 = histmoedas.loc[(
+            histmoedas["symbol"] == f'{lista_moedas[2]}BRL=X'), ["date", "close"]]
+    else:
+        histmoedas3 = []
+
     if len(lista_moedas) >= 4:
         histmoedas4 = histmoedas.loc[(
             histmoedas["symbol"] == f'{lista_moedas[3]}BRL=X'), ["date", "close"]]
@@ -129,7 +132,10 @@ def gerar_grafico_moedas(carteira, num):
     # gerando o plot
     plt.plot(histmoedas1.date, histmoedas1.close, label=f'{lista_moedas[0]}')
     plt.plot(histmoedas2.date, histmoedas2.close, label=f'{lista_moedas[1]}')
-    plt.plot(histmoedas3.date, histmoedas3.close, label=f'{lista_moedas[2]}')
+
+    if len(lista_moedas) >= 3:
+        plt.plot(histmoedas3.date, histmoedas3.close, label=f'{lista_moedas[2]}')
+
     if len(lista_moedas) >= 4:
         plt.plot(histmoedas4.date, histmoedas4.close,
                  label=f'{lista_moedas[3]}')

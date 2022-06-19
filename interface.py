@@ -16,10 +16,8 @@ def mostrar_menu():
     
     print(parte_inferior)
 
-def avalia_carteira(url):
+def avalia_carteira(url, dias):
     ce.criar_excel(url)
-
-    dias = 200
 
     gr.gerar_grafico_moedas(url, dias)
     gr.gerar_grafico_acoes(url, dias)
@@ -36,9 +34,19 @@ def iniciar_interface():
         match resposta:
             case '1':
                 url = input('Digite a URL do site com a carteira: ')
-                avalia_carteira(url)
 
-                print('-> Dados da carteira salvos em Carteira.xlsx\n' +
+                dias = -1
+                
+                # Loop até ser dado um valor positivo
+                while dias < 1 or dias > 3650:
+                    dias = int(input('Quantos dias deverão ser avaliados: '))
+
+                    if dias < 1 or dias > 3650:
+                        print("Digite um valor entre 1 e 3650.")
+                
+                avalia_carteira(url, dias)
+
+                print('\n-> Dados da carteira salvos em Carteira.xlsx\n' +
                 '-> Gráficos salvos:\n' +
                 '\tvariacao_acoes.png\n' +
                 '\tvariacao_carteira.png\n' +
