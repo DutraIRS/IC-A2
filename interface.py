@@ -11,3 +11,17 @@ def mostrar_menu():
         print(linha)
     
     print(parte_inferior)
+
+def iniciar_interface():
+    resposta = -1
+
+    while resposta != '2':
+        mostrar_menu()
+
+        resposta = input('Escolha: ')
+
+        match resposta:
+            case '1':
+                print("TODO: inserir função certa")
+            case '2':
+                print('Encerrando programa...')
