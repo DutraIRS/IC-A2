@@ -57,20 +57,16 @@ def gerar_grafico_acoes(carteira, num):
     plt.plot(histacoes3.date, histacoes3.close, label = f'{lista_acoes[2]}')
     if len(lista_acoes) >= 4:
         plt.plot(histacoes4.date, histacoes4.close, label = f'{lista_acoes[3]}')
-    else:
-        print('')
+        
     if len(lista_acoes) >= 5:
         plt.plot(histacoes5.date, histacoes5.close, label = f'{lista_acoes[4]}')
-    else:
-        print('')
+        
     if len(lista_acoes) >= 6:
         plt.plot(histacoes6.date, histacoes6.close, label = f'{lista_acoes[5]}')
-    else:
-        print('')
+        
     if len(lista_acoes) >= 7:
         plt.plot(histacoes7.date, histacoes7.close, label = f'{lista_acoes[6]}')
-    else:
-        print('')
+        
     plt.legend()
     plt.title(f'Variação do preço das ações ao longo de {num} dias')
     plt.savefig('variacao_acoes.png')
@@ -98,7 +94,6 @@ def gerar_grafico_moedas(carteira, num):
     portifolio_moedas = (portifolio_list[0])
 
     lista_moedas = list(portifolio_moedas.keys())
-    print(lista_moedas)
     #Gerando os datasets do histórico das ações e moedas
     histmoedas = ctc.hist_moedas_real(lista_moedas, num)
     histmoedas.reset_index(level = "date", inplace = True)
@@ -123,12 +118,10 @@ def gerar_grafico_moedas(carteira, num):
     plt.plot(histmoedas3.date, histmoedas3.close, label = f'{lista_moedas[2]}')
     if len(lista_moedas) >= 4:
         plt.plot(histmoedas4.date, histmoedas4.close, label = f'{lista_moedas[3]}')
-    else:
-        print('')
+        
     if len(lista_moedas) >= 5:
         plt.plot(histmoedas5.date, histmoedas5.close, label = f'{lista_moedas[4]}')
-    else:
-        print('')
+        
     plt.legend()
     plt.title(f'Variação do preço das moedas ao longo de {num} dias')
     plt.savefig('variacao_moedas.png')
