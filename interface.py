@@ -46,7 +46,7 @@ def iniciar_interface():
                 
                 avalia_carteira(url, dias)
 
-                print('-> Dados da carteira salvos em Carteira.xlsx\n' +
+                print('\n-> Dados da carteira salvos em Carteira.xlsx\n' +
                 '-> Gráficos salvos:\n' +
                 '\tvariacao_acoes.png\n' +
                 '\tvariacao_carteira.png\n' +
