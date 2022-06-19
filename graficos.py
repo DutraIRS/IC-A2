@@ -20,10 +20,8 @@ def gerar_grafico_acoes(carteira, num):
     # Retirando as moedas e ações dos dicionários
     """Passando para listas separadas para poderem ser usadas
     nos comandos hist_moedas_real e hist_acoes"""
-    portifolio_moedas = (portifolio_list[0])
     portifolio_acoes = (portifolio_list[1])
 
-    lista_moedas = list(portifolio_moedas.keys())
     lista_acoes = list(portifolio_acoes.keys())
 
     # Gerando os datasets do histórico das ações e moedas
